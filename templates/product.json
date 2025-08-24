@@ -21,7 +21,9 @@
         },
         "title": {
           "type": "title",
-          "settings": {}
+          "settings": {
+            "title_line_clamp": "3"
+          }
         },
         "caption": {
           "type": "text",
