@@ -30,6 +30,10 @@
   assign pad_class = 'overlay-pad-' | append: section.settings.content_padding
   assign width_class = 'overlay-width-' | append: section.settings.content_max_width
   assign height_class = 'custom-hero--' | append: section.settings.height
+  assign manual_text_color = ''
+  if section.settings.text_color_mode == 'manual' and section.settings.text_color != blank
+    assign manual_text_color = section.settings.text_color
+  endif
 -%}
 
 <section class="custom-hero {{ height_class }} color-{{ section.settings.color_scheme }}">
@@ -60,7 +64,7 @@
     <div class="custom-hero__overlay {{ pos_class }} {{ overlay_classes }}">
       <div
         class="custom-hero__content {{ width_class }} {{ pad_class }} overlay-theme-{{ overlay_theme }}"
-        style="{% if section.settings.content_bg_opacity > 0 %}{% if overlay_theme == 'dark' %}background-color: rgba(0,0,0,{{ content_bg_alpha }});{% else %}background-color: rgba(255,255,255,{{ content_bg_alpha }});{% endif %}{% endif %}"
+        style="{% if manual_text_color != '' %}color: {{ manual_text_color }};{% endif %}{% if section.settings.content_bg_opacity > 0 %}{% if overlay_theme == 'dark' %}background-color: rgba(0,0,0,{{ content_bg_alpha }});{% else %}background-color: rgba(255,255,255,{{ content_bg_alpha }});{% endif %}{% endif %}"
       >
         {%- if section.settings.kicker != blank -%}
           <p class="custom-hero__kicker">{{ section.settings.kicker }}</p>
@@ -139,7 +143,7 @@
       ]
     },
 
-    { "type": "header", "content": "Overlay" },
+    { "type": "header", "content": "Content container" },
     {
       "type": "select",
       "id": "position",
@@ -149,7 +153,9 @@
         { "value": "top-left", "label": "Top left" },
         { "value": "top-center", "label": "Top center" },
         { "value": "top-right", "label": "Top right" },
+        { "value": "center-left", "label": "Center left" },
         { "value": "center", "label": "Center" },
+        { "value": "center-right", "label": "Center right" },
         { "value": "bottom-left", "label": "Bottom left" },
         { "value": "bottom-center", "label": "Bottom center" },
         { "value": "bottom-right", "label": "Bottom right" }
@@ -158,13 +164,24 @@
     {
       "type": "select",
       "id": "overlay_theme",
-      "label": "Overlay theme",
+      "label": "Content container theme",
       "default": "light",
       "options": [
         { "value": "light", "label": "Light" },
         { "value": "dark", "label": "Dark" }
       ]
     },
+    {
+      "type": "select",
+      "id": "text_color_mode",
+      "label": "Text color mode",
+      "default": "auto",
+      "options": [
+        { "value": "auto", "label": "Auto (based on overlay theme)" },
+        { "value": "manual", "label": "Manual color" }
+      ]
+    },
+    { "type": "color", "id": "text_color", "label": "Text color (when manual)" },
     {
       "type": "select",
       "id": "content_max_width",

@@ -26,6 +26,21 @@
 {%- style -%}
   #Banner-{{ section.id }}::after {
     opacity: {{ section.settings.image_overlay_opacity | divided_by: 100.0 }};
+    content: '';
+    {% liquid
+      assign grad_rgb = '0,0,0'
+      if section.settings.overlay_gradient_style == 'light'
+        assign grad_rgb = '255,255,255'
+      endif
+      assign grad_dir = section.settings.overlay_gradient_direction | default: 'bottom'
+    %}
+    {% if grad_dir == 'bottom' %}
+    background: linear-gradient(180deg, rgba({{ grad_rgb }}, 0) 0%, rgba({{ grad_rgb }}, 1) 100%);
+    {% elsif grad_dir == 'top' %}
+    background: linear-gradient(0deg, rgba({{ grad_rgb }}, 0) 0%, rgba({{ grad_rgb }}, 1) 100%);
+    {% else %}
+    background: rgba({{ grad_rgb }}, 1);
+    {% endif %}
   }
 {%- endstyle -%}
 
@@ -197,6 +212,27 @@
     },
     {
       "type": "select",
+      "id": "overlay_gradient_style",
+      "label": "Overlay gradient style",
+      "default": "dark",
+      "options": [
+        { "value": "dark", "label": "Dark" },
+        { "value": "light", "label": "Light" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "overlay_gradient_direction",
+      "label": "Overlay gradient direction",
+      "default": "bottom",
+      "options": [
+        { "value": "bottom", "label": "Bottom" },
+        { "value": "top", "label": "Top" },
+        { "value": "full", "label": "Full tint" }
+      ]
+    },
+    {
+      "type": "select",
       "id": "image_height",
       "options": [
         {
@@ -332,7 +368,7 @@
       "id": "stack_images_on_mobile",
       "default": true,
       "label": "t:sections.image-banner.settings.stack_images_on_mobile.label"
-    },    
+    },
     {
       "type": "select",
       "id": "mobile_content_alignment",
@@ -441,8 +477,8 @@
       "limit": 1,
       "settings": [
         {
-        "type": "header",
-        "content": "t:sections.image-banner.blocks.buttons.settings.header_1.content"
+          "type": "header",
+          "content": "t:sections.image-banner.blocks.buttons.settings.header_1.content"
         },
         {
           "type": "text",
@@ -463,8 +499,8 @@
           "label": "t:sections.image-banner.blocks.buttons.settings.button_style_secondary_1.label"
         },
         {
-        "type": "header",
-        "content": "t:sections.image-banner.blocks.buttons.settings.header_2.content"
+          "type": "header",
+          "content": "t:sections.image-banner.blocks.buttons.settings.header_2.content"
         },
         {
           "type": "text",

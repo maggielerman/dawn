@@ -16,10 +16,10 @@
 }
 
 /* Heights */
-.custom-hero--small .custom-hero__media { min-height: 40vh; }
-.custom-hero--medium .custom-hero__media { min-height: 60vh; }
-.custom-hero--large .custom-hero__media { min-height: 75vh; }
-.custom-hero--full .custom-hero__media { min-height: 100vh; }
+.custom-hero--small .custom-hero__media { height: 40vh; }
+.custom-hero--medium .custom-hero__media { height: 60vh; }
+.custom-hero--large .custom-hero__media { height: 75vh; }
+.custom-hero--full .custom-hero__media { height: 100vh; }
 
 /* Radius */
 .hero-radius-none { border-radius: 0; }
@@ -41,6 +41,8 @@
 .overlay-pos-top-center { align-items: flex-start; justify-content: center; text-align: center; }
 .overlay-pos-top-right { align-items: flex-start; justify-content: flex-end; text-align: right; }
 .overlay-pos-center { align-items: center; justify-content: center; text-align: center; }
+.overlay-pos-center-left { align-items: center; justify-content: flex-start; text-align: left; }
+.overlay-pos-center-right { align-items: center; justify-content: flex-end; text-align: right; }
 .overlay-pos-bottom-left { align-items: flex-end; justify-content: flex-start; text-align: left; }
 .overlay-pos-bottom-center { align-items: flex-end; justify-content: center; text-align: center; }
 .overlay-pos-bottom-right { align-items: flex-end; justify-content: flex-end; text-align: right; }

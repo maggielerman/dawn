@@ -1,6 +1,7 @@
 {{ 'component-article-card.css' | asset_url | stylesheet_tag }}
 {{ 'component-card.css' | asset_url | stylesheet_tag }}
 {{ 'section-main-blog-modern.css' | asset_url | stylesheet_tag }}
+<!-- Modern Blog Section -->
 
 {%- style -%}
   .section-{{ section.id }}-padding {
@@ -167,27 +168,6 @@
       <!-- Sidebar -->
       {% if section.settings.show_sidebar %}
         <aside class="modern-blog__sidebar{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}">
-          <!-- Categories -->
-          {% if section.settings.sidebar_show_categories %}
-            <div class="sidebar-widget sidebar-widget--categories">
-              <h3 class="sidebar-widget__title">
-                {{ section.settings.sidebar_categories_title | default: 'Categories' }}
-              </h3>
-              <div class="sidebar-widget__content">
-                <ul class="sidebar-categories">
-                  {% for category in blog.tags %}
-                    {% assign category_url = blog.url | append: '/tagged/' | append: category | handle %}
-                    <li class="sidebar-categories__item">
-                      <a href="{{ category_url }}" class="sidebar-categories__link">
-                        {{ category }}
-                      </a>
-                    </li>
-                  {% endfor %}
-                </ul>
-              </div>
-            </div>
-          {% endif %}
-
           <!-- Recent Posts -->
           {% if section.settings.sidebar_show_recent_posts %}
             <div class="sidebar-widget sidebar-widget--recent-posts">
@@ -342,18 +322,6 @@
       "id": "show_sidebar",
       "default": false,
       "label": "Show sidebar"
-    },
-    {
-      "type": "checkbox",
-      "id": "sidebar_show_categories",
-      "default": true,
-      "label": "Show categories"
-    },
-    {
-      "type": "text",
-      "id": "sidebar_categories_title",
-      "default": "Categories",
-      "label": "Categories title"
     },
     {
       "type": "link_list",
