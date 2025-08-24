@@ -13,6 +13,7 @@
       "type": "custom-hero",
       "settings": {
         "color_scheme": "scheme-1",
+        "image": "shopify://shop_images/design-01k3bj72sp-1755957427.jpg",
         "height": "large",
         "corner_radius": "medium",
         "position": "center",

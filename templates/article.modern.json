@@ -1,10 +1,20 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "main": {
       "type": "main-article-modern",
       "blocks": {
         "breadcrumb": {
-          "type": "breadcrumb"
+          "type": "breadcrumb",
+          "settings": {}
         },
         "featured_image": {
           "type": "featured_image",
@@ -22,10 +32,12 @@
           }
         },
         "content": {
-          "type": "content"
+          "type": "content",
+          "settings": {}
         },
         "tags": {
-          "type": "tags"
+          "type": "tags",
+          "settings": {}
         },
         "share": {
           "type": "share",
@@ -41,15 +53,6 @@
           }
         }
       },
-      "settings": {
-        "show_sidebar": true,
-        "sidebar_position": "right",
-        "sidebar_show_recent_posts": true,
-        "sidebar_recent_posts_title": "Recent Posts",
-        "sidebar_recent_posts_count": 5,
-        "sidebar_show_tags": true,
-        "sidebar_tags_title": "Tags"
-      },
       "block_order": [
         "breadcrumb",
         "featured_image",
@@ -58,7 +61,16 @@
         "tags",
         "share",
         "author_bio"
-      ]
+      ],
+      "settings": {
+        "show_sidebar": true,
+        "sidebar_position": "right",
+        "sidebar_show_recent_posts": true,
+        "sidebar_recent_posts_title": "Recent Posts",
+        "sidebar_recent_posts_count": 5,
+        "sidebar_show_tags": true,
+        "sidebar_tags_title": "Tags"
+      }
     }
   },
   "order": [
