@@ -91,7 +91,7 @@
         "image_overlay_opacity": 20,
         "overlay_gradient_style": "dark",
         "overlay_gradient_direction": "bottom",
-        "image_height": "adapt",
+        "image_height": "large",
         "image_behavior": "none",
         "desktop_content_position": "middle-left",
         "desktop_content_alignment": "left",
