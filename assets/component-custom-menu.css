@@ -137,6 +137,9 @@
   width: 100%;
   background-color: #ffffff;
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  /* Add padding-top to create a hoverable area that connects to the button */
+  padding-top: 10px;
+  margin-top: -10px;
 }
 
 .custom-menu-content {
@@ -280,6 +283,22 @@
 .hoverable:hover .custom-menu,
 .group:hover .custom-menu {
   display: block;
+}
+
+/* Ensure the menu stays open when hovering over the menu itself */
+.hoverable .custom-menu:hover {
+  display: block;
+}
+
+/* Additional hover area to prevent menu from closing */
+.hoverable .custom-menu::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: 0;
+  right: 0;
+  height: 10px;
+  background: transparent;
 }
 
 /* Ensure dropdown appears above page content but below sticky header controls */
