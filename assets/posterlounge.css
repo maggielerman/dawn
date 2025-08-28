@@ -58,6 +58,18 @@ body {
   padding: 0.75rem 1rem;
 }
 
+/* Custom header menu alignment and spacing */
+.header__inline-menu--custom .list-menu--inline {
+  gap: 8px;
+}
+.header__inline-menu--custom .hoverable > .header__menu-item {
+  padding: 0.75rem 1rem;
+}
+.header__inline-menu--custom .custom-menu-title,
+.header__inline-menu--custom .custom-menu-title-custom {
+  font-weight: 700;
+}
+
 /* USP strip (if used) */
 .pl-usp-strip {
   display: grid;
