@@ -1,0 +1,124 @@
+/* Posterlounge-inspired global overrides */
+:root {
+  --pl-bg: #ffffff;
+  --pl-text: #111111;
+  --pl-muted: #6a6a6a;
+  --pl-accent: #0e5aa7;
+  --pl-accent-2: #f5f7fb;
+  --pl-border: #e6e6e6;
+}
+
+body {
+  color: var(--pl-text);
+  background: var(--pl-bg);
+}
+
+/* Header: larger, centered search, clean nav */
+.section-header .header {
+  padding-top: 12px;
+  padding-bottom: 12px;
+}
+.header__heading-link {
+  text-decoration: none;
+}
+
+/* Hide modal search on desktop if inline exists */
+@media (min-width: 990px) {
+  .header__search { display: none; }
+}
+
+.header__inline-search {
+  display: none;
+}
+@media (min-width: 990px) {
+  .header__inline-search { display: block; flex: 1 1 auto; max-width: 720px; margin: 0 2rem; }
+}
+.header__inline-search .field { position: relative; }
+.header__inline-search .field__input {
+  height: 44px;
+  border-radius: 999px;
+  border: 1px solid var(--pl-border);
+  background: var(--pl-accent-2);
+  padding: 0 48px 0 16px;
+}
+.header__inline-search .field__button {
+  position: absolute;
+  right: 4px;
+  top: 4px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--pl-accent);
+  color: #fff;
+}
+
+/* Navigation emphasis */
+.header .list-menu__item--link {
+  font-weight: 600;
+  padding: 0.75rem 1rem;
+}
+
+/* USP strip (if used) */
+.pl-usp-strip {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  background: var(--pl-accent-2);
+  border-top: 1px solid var(--pl-border);
+  border-bottom: 1px solid var(--pl-border);
+  padding: 8px 0;
+  color: var(--pl-muted);
+  font-size: 14px;
+}
+
+/* Home hero tighter overlay */
+.image-banner .banner__content { max-width: 1100px; }
+
+/* Collection: left filters, tighter product card */
+.facets-vertical.page-width { display: grid; grid-template-columns: 280px 1fr; gap: 28px; }
+.facets-wrapper { border-right: 1px solid var(--pl-border); padding-right: 20px; }
+.collection .grid .grid__item { padding-bottom: 28px; }
+
+/* Product cards */
+.card-wrapper .card__content { padding-top: 8px; }
+.price { font-weight: 700; }
+
+/* Product page: size grid buttons */
+.product-form__input--pill .product-variant-options,
+.product-form__input--pill fieldset { width: 100%; }
+.product-form__input--pill .product-form__input { margin-bottom: 12px; }
+.product-form__input--pill .product-variant__option,
+.product-form__input--pill .product-variant__button,
+.product-form__input--pill input[type="radio"] + label {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 64px;
+  height: 44px;
+  padding: 0 12px;
+  margin: 6px 8px 0 0;
+  border: 1px solid var(--pl-border);
+  border-radius: 8px;
+  background: #fff;
+  font-weight: 600;
+}
+.product-form__input--pill input[type="radio"]:checked + label {
+  border-color: var(--pl-accent);
+  box-shadow: 0 0 0 2px rgba(14,90,167,0.15);
+}
+
+/* CTA buttons */
+.button, button, .shopify-payment-button__button {
+  border-radius: 8px;
+  font-weight: 700;
+}
+.product-form__submit { height: 48px; }
+
+/* Footer styling */
+.footer { background: #0f1218; color: #cbd1da; }
+.footer a { color: #ffffff; }
+.footer .list-menu__item--link { padding: 4px 0; }
+
+/* Cart drawer */
+.cart-drawer { border-left: 1px solid var(--pl-border); }
+

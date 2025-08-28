@@ -151,6 +151,18 @@
       endif
     -%}
 
+    <div class="header__inline-search small-hide">
+      <form action="{{ routes.search_url }}" method="get" role="search" class="search">
+        <div class="field">
+          <input class="field__input" id="Search-Inline" type="search" name="q" placeholder="{{ 'general.search.search' | t }}">
+          <button class="search__button field__button" aria-label="{{ 'general.search.search' | t }}">
+            <span class="svg-wrapper">{{- 'icon-search.svg' | inline_asset_content -}}</span>
+          </button>
+        </div>
+        <input type="hidden" name="options[prefix]" value="last">
+      </form>
+    </div>
+
     {%- if section.settings.logo_position != 'middle-center' -%}
       {%- if request.page_type == 'index' -%}
         <h1 class="header__heading">
