@@ -19,7 +19,7 @@
 
       {%- when 'breadcrumb' -%}
         <div
-          class="modern-article__breadcrumb page-width{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--fade-in{% endif %}"
+          class="modern-article__breadcrumb page-width page-width--narrow{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--fade-in{% endif %}"
           {{ block.shopify_attributes }}
         >
           <nav aria-label="Breadcrumb">
@@ -58,52 +58,140 @@
                   assign radius_class = 'hero-radius-full'
               endcase
             %}
-            <div class="modern-article__hero-image modern-article__hero-{{ block.settings.image_height }} {{ radius_class }}{% if block.settings.overlay_title %} has-overlay{% endif %}">
-              <img
-                srcset="
-                  {% if article.image.width >= 550 %}{{ article.image | image_url: width: 550 }} 550w,{% endif %}
-                  {% if article.image.width >= 750 %}{{ article.image | image_url: width: 750 }} 750w,{% endif %}
-                  {% if article.image.width >= 1100 %}{{ article.image | image_url: width: 1100 }} 1100w,{% endif %}
-                  {% if article.image.width >= 1500 %}{{ article.image | image_url: width: 1500 }} 1500w,{% endif %}
-                  {% if article.image.width >= 2200 %}{{ article.image | image_url: width: 2200 }} 2200w,{% endif %}
-                  {{ article.image | image_url }} {{ article.image.width }}w
-                "
-                sizes="(min-width: {{ settings.page_width }}px) {{ settings.page_width | minus: 100 }}px, (min-width: 750px) calc(100vw - 10rem), 100vw"
-                src="{{ article.image | image_url: width: 1100 }}"
-                loading="eager"
-                fetchpriority="high"
-                width="{{ article.image.width }}"
-                height="{{ article.image.height }}"
-                alt="{{ article.image.alt | escape }}"
-                class="modern-article__hero-img"
-              >
-              {% if block.settings.overlay_title %}
-                <div class="modern-article__hero-overlay overlay-pos-{{ block.settings.overlay_position }} overlay-theme-{{ block.settings.overlay_theme }}{% if block.settings.overlay_backdrop %} overlay-with-backdrop{% endif %}">
-                  {% if block.settings.overlay_backdrop %}
-                    <div class="modern-article__overlay-backdrop backdrop-{{ block.settings.overlay_backdrop_style }} backdrop-dir-{{ block.settings.overlay_backdrop_direction }} backdrop-strength-{{ block.settings.overlay_backdrop_strength }}"></div>
-                  {% endif %}
-                  <div class="modern-article__overlay-inner overlay-max-{{ block.settings.overlay_max_width }} overlay-pad-{{ block.settings.overlay_padding }}">
-                    <h1 class="modern-article__title modern-article__title--overlay">{{ article.title | escape }}</h1>
-                    {% if block.settings.overlay_show_excerpt and article.excerpt != blank %}
-                      <div class="modern-article__overlay-excerpt">{{ article.excerpt }}</div>
+
+            {% if block.settings.hero_style == 'two_column' %}
+              <!-- Two Column Hero Layout -->
+              <div class="modern-article__hero-two-column {{ radius_class }}">
+                <div class="modern-article__hero-text-column">
+                  <div class="modern-article__hero-text-content">
+                    {% if block.settings.show_category and article.tags.size > 0 %}
+                      <div class="modern-article__category">
+                        {{ article.tags.first }}
+                      </div>
                     {% endif %}
-                    {% if block.settings.overlay_show_date or block.settings.overlay_show_author or block.settings.overlay_show_read_time %}
-                      <div class="modern-article__overlay-meta">
-                        {% if block.settings.overlay_show_date %}
-                          <time class="modern-article__date" datetime="{{ article.published_at | date: '%Y-%m-%d' }}">{{ article.published_at | date: '%B %d, %Y' }}</time>
-                        {% endif %}
-                        {% if block.settings.overlay_show_author and article.author != blank %}
-                          <span class="modern-article__author">{{ article.author }}</span>
-                        {% endif %}
-                        {% if block.settings.overlay_show_read_time %}
+
+                    <h1 class="modern-article__title modern-article__title--two-column">
+                      {{ article.title | escape }}
+                    </h1>
+
+                    {% if block.settings.show_subtitle and article.excerpt != blank %}
+                      <div class="modern-article__subtitle">
+                        {{ article.excerpt }}
+                      </div>
+                    {% endif %}
+
+                    <div class="modern-article__hero-meta">
+                      {% if block.settings.show_author and article.author != blank %}
+                        <div class="modern-article__author-info">
+                          <span class="modern-article__author-label">By</span>
+                          <span class="modern-article__author-name">{{ article.author }}</span>
+                        </div>
+                      {% endif %}
+
+                      {% if block.settings.show_date %}
+                        <div class="modern-article__date-info">
+                          <time class="modern-article__date" datetime="{{ article.published_at | date: '%Y-%m-%d' }}">
+                            {{- article.published_at | date: '%B %d, %Y' -}}
+                          </time>
+                        </div>
+                      {% endif %}
+
+                      {% if block.settings.show_read_time %}
+                        <div class="modern-article__read-time-info">
                           <span class="modern-article__read-time">{{ read_time }} min read</span>
-                        {% endif %}
+                        </div>
+                      {% endif %}
+                    </div>
+
+                    {% if block.settings.show_share_buttons %}
+                      <div class="modern-article__hero-share">
+                        <div class="modern-article__share-label">{{ 'general.share.share_url' | t }}</div>
+                        {% assign share_url = request.origin | append: article.url %}
+                        {% render 'share-button', block: block, share_link: share_url %}
                       </div>
                     {% endif %}
                   </div>
                 </div>
-              {% endif %}
-            </div>
+
+                <div class="modern-article__hero-image-column">
+                  <div class="modern-article__hero-image-wrapper">
+                    <img
+                      srcset="
+                        {% if article.image.width >= 550 %}{{ article.image | image_url: width: 550 }} 550w,{% endif %}
+                        {% if article.image.width >= 750 %}{{ article.image | image_url: width: 750 }} 750w,{% endif %}
+                        {% if article.image.width >= 1100 %}{{ article.image | image_url: width: 1100 }} 1100w,{% endif %}
+                        {% if article.image.width >= 1500 %}{{ article.image | image_url: width: 1500 }} 1500w,{% endif %}
+                        {% if article.image.width >= 2200 %}{{ article.image | image_url: width: 2200 }} 2200w,{% endif %}
+                        {{ article.image | image_url }} {{ article.image.width }}w
+                      "
+                      sizes="(min-width: 990px) 50vw, 100vw"
+                      src="{{ article.image | image_url: width: 1100 }}"
+                      loading="eager"
+                      fetchpriority="high"
+                      width="{{ article.image.width }}"
+                      height="{{ article.image.height }}"
+                      alt="{{ article.image.alt | escape }}"
+                      class="modern-article__hero-img"
+                    >
+                  </div>
+                </div>
+              </div>
+            {% else %}
+              <!-- Original Single Column Hero Layout -->
+              <div class="modern-article__hero-image modern-article__hero-{{ block.settings.image_height }} {{ radius_class }}{% if block.settings.overlay_title %} has-overlay{% endif %}">
+                <img
+                  srcset="
+                    {% if article.image.width >= 550 %}{{ article.image | image_url: width: 550 }} 550w,{% endif %}
+                    {% if article.image.width >= 750 %}{{ article.image | image_url: width: 750 }} 750w,{% endif %}
+                    {% if article.image.width >= 1100 %}{{ article.image | image_url: width: 1100 }} 1100w,{% endif %}
+                    {% if article.image.width >= 1500 %}{{ article.image | image_url: width: 1500 }} 1500w,{% endif %}
+                    {% if article.image.width >= 2200 %}{{ article.image | image_url: width: 2200 }} 2200w,{% endif %}
+                    {{ article.image | image_url }} {{ article.image.width }}w
+                  "
+                  sizes="(min-width: {{ settings.page_width }}px) {{ settings.page_width | minus: 100 }}px, (min-width: 750px) calc(100vw - 10rem), 100vw"
+                  src="{{ article.image | image_url: width: 1100 }}"
+                  loading="eager"
+                  fetchpriority="high"
+                  width="{{ article.image.width }}"
+                  height="{{ article.image.height }}"
+                  alt="{{ article.image.alt | escape }}"
+                  class="modern-article__hero-img"
+                >
+                {% if block.settings.overlay_title %}
+                  <div class="modern-article__hero-overlay overlay-pos-{{ block.settings.overlay_position }} overlay-theme-{{ block.settings.overlay_theme }}{% if block.settings.overlay_backdrop %} overlay-with-backdrop{% endif %}">
+                    {% if block.settings.overlay_backdrop %}
+                      <div
+                        class="modern-article__overlay-backdrop backdrop-{{ block.settings.overlay_backdrop_style }} backdrop-dir-{{ block.settings.overlay_backdrop_direction }} backdrop-strength-{{ block.settings.overlay_backdrop_strength }}"
+                      ></div>
+                    {% endif %}
+                    <div class="modern-article__overlay-inner overlay-max-{{ block.settings.overlay_max_width }} overlay-pad-{{ block.settings.overlay_padding }}">
+                      <h1 class="modern-article__title modern-article__title--overlay">{{ article.title | escape }}</h1>
+                      {% if block.settings.overlay_show_excerpt and article.excerpt != blank %}
+                        <div class="modern-article__overlay-excerpt">{{ article.excerpt }}</div>
+                      {% endif %}
+                      {% if block.settings.overlay_show_date
+                        or block.settings.overlay_show_author
+                        or block.settings.overlay_show_read_time
+                      %}
+                        <div class="modern-article__overlay-meta">
+                          {% if block.settings.overlay_show_date %}
+                            <time class="modern-article__date" datetime="{{ article.published_at | date: '%Y-%m-%d' }}">
+                              {{- article.published_at | date: '%B %d, %Y' -}}
+                            </time>
+                          {% endif %}
+                          {% if block.settings.overlay_show_author and article.author != blank %}
+                            <span class="modern-article__author">{{ article.author }}</span>
+                          {% endif %}
+                          {% if block.settings.overlay_show_read_time %}
+                            <span class="modern-article__read-time">{{ read_time }} min read</span>
+                          {% endif %}
+                        </div>
+                      {% endif %}
+                    </div>
+                  </div>
+                {% endif %}
+              </div>
+            {% endif %}
           </div>
         {%- endif -%}
 
@@ -151,7 +239,7 @@
 
       {%- when 'content' -%}
         <div
-          class="modern-article__container page-width{% if section.settings.show_sidebar %} modern-article__container--with-sidebar modern-article__container--sidebar-{{ section.settings.sidebar_position }}{% endif %}"
+          class="modern-article__container page-width page-width--narrow{% if section.settings.show_sidebar %} modern-article__container--with-sidebar modern-article__container--sidebar-{{ section.settings.sidebar_position }}{% endif %}"
           {{ block.shopify_attributes }}
         >
           <main class="modern-article__main{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}">
@@ -169,10 +257,12 @@
                     {{ section.settings.sidebar_recent_posts_title | default: 'Recent Posts' }}
                   </h3>
                   <div class="sidebar-widget__content">
-                    {% assign recent_articles = blog.articles | limit: section.settings.sidebar_recent_posts_count %}
+                    {% assign recent_articles = blog.articles %}
                     <ul class="sidebar-recent-posts">
+                      {% assign count = 0 %}
                       {% for recent in recent_articles %}
-                        {% if recent.id != article.id %}
+                        {% if recent.id != article.id and count < section.settings.sidebar_recent_posts_count %}
+                          {% assign count = count | plus: 1 %}
                           <li class="sidebar-recent-posts__item">
                             <article class="sidebar-recent-post">
                               {% if recent.image %}
@@ -470,6 +560,200 @@
   {{ article | structured_data }}
 </script>
 
+<script>
+  // Color detection for two-column hero layout
+  document.addEventListener('DOMContentLoaded', function () {
+    const heroTwoColumn = document.querySelector('.modern-article__hero-two-column');
+    if (!heroTwoColumn) return;
+
+    const imageWrapper = heroTwoColumn.querySelector('.modern-article__hero-image-wrapper img');
+    const textColumn = heroTwoColumn.querySelector('.modern-article__hero-text-column');
+
+    if (!imageWrapper || !textColumn) return;
+
+    // Create a canvas to analyze image colors
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+
+    imageWrapper.addEventListener('load', function () {
+      // Set canvas size
+      canvas.width = imageWrapper.naturalWidth;
+      canvas.height = imageWrapper.naturalHeight;
+
+      // Draw image to canvas
+      ctx.drawImage(imageWrapper, 0, 0);
+
+      // Get image data
+      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      const data = imageData.data;
+
+      // Sample colors from different areas
+      const samples = [];
+      const step = Math.max(1, Math.floor(data.length / 4000)); // Sample every nth pixel
+
+      for (let i = 0; i < data.length; i += step * 4) {
+        const r = data[i];
+        const g = data[i + 1];
+        const b = data[i + 2];
+
+        // Skip very dark or very light pixels
+        const brightness = (r + g + b) / 3;
+        if (brightness > 30 && brightness < 225) {
+          samples.push({ r, g, b });
+        }
+      }
+
+      // Calculate dominant colors
+      const dominantColors = getDominantColors(samples, 3);
+
+      // Determine theme based on dominant colors
+      const theme = determineTheme(dominantColors);
+
+      // Apply theme class
+      textColumn.classList.add(`theme-${theme}`);
+    });
+  });
+
+  function getDominantColors(samples, count) {
+    // Simple k-means clustering for color analysis
+    const colors = samples.map((sample) => [sample.r, sample.g, sample.b]);
+    const clusters = kMeans(colors, count);
+
+    return clusters.map((cluster) => {
+      const avg = cluster.reduce(
+        (acc, color) => {
+          acc[0] += color[0];
+          acc[1] += color[1];
+          acc[2] += color[2];
+          return acc;
+        },
+        [0, 0, 0]
+      );
+
+      return {
+        r: Math.round(avg[0] / cluster.length),
+        g: Math.round(avg[1] / cluster.length),
+        b: Math.round(avg[2] / cluster.length),
+      };
+    });
+  }
+
+  function kMeans(data, k) {
+    // Simple k-means implementation
+    const centroids = [];
+    const clusters = [];
+
+    // Initialize centroids randomly
+    for (let i = 0; i < k; i++) {
+      centroids.push(data[Math.floor(Math.random() * data.length)]);
+      clusters.push([]);
+    }
+
+    // Iterate
+    for (let iter = 0; iter < 10; iter++) {
+      // Clear clusters
+      clusters.forEach((cluster) => (cluster.length = 0));
+
+      // Assign points to nearest centroid
+      data.forEach((point) => {
+        let minDist = Infinity;
+        let minIndex = 0;
+
+        centroids.forEach((centroid, i) => {
+          const dist = distance(point, centroid);
+          if (dist < minDist) {
+            minDist = dist;
+            minIndex = i;
+          }
+        });
+
+        clusters[minIndex].push(point);
+      });
+
+      // Update centroids
+      centroids.forEach((centroid, i) => {
+        if (clusters[i].length > 0) {
+          const avg = clusters[i].reduce(
+            (acc, point) => {
+              acc[0] += point[0];
+              acc[1] += point[1];
+              acc[2] += point[2];
+              return acc;
+            },
+            [0, 0, 0]
+          );
+
+          centroids[i] = [avg[0] / clusters[i].length, avg[1] / clusters[i].length, avg[2] / clusters[i].length];
+        }
+      });
+    }
+
+    return clusters;
+  }
+
+  function distance(a, b) {
+    return Math.sqrt((a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2 + (a[2] - b[2]) ** 2);
+  }
+
+  function determineTheme(colors) {
+    // Analyze color characteristics
+    const avgColor = colors.reduce(
+      (acc, color) => {
+        acc.r += color.r;
+        acc.g += color.g;
+        acc.b += color.b;
+        return acc;
+      },
+      { r: 0, g: 0, b: 0 }
+    );
+
+    avgColor.r /= colors.length;
+    avgColor.g /= colors.length;
+    avgColor.b /= colors.length;
+
+    // Calculate hue
+    const hue = rgbToHue(avgColor.r, avgColor.g, avgColor.b);
+
+    // Determine theme based on hue ranges
+    if (hue >= 0 && hue < 30) return 'warm'; // Reds
+    if (hue >= 30 && hue < 60) return 'sunset'; // Oranges
+    if (hue >= 60 && hue < 90) return 'warm'; // Yellows
+    if (hue >= 90 && hue < 150) return 'nature'; // Greens
+    if (hue >= 150 && hue < 240) return 'cool'; // Blues
+    if (hue >= 240 && hue < 270) return 'ocean'; // Purples
+    if (hue >= 270 && hue < 360) return 'warm'; // Magentas
+
+    return 'cool'; // Default
+  }
+
+  function rgbToHue(r, g, b) {
+    r /= 255;
+    g /= 255;
+    b /= 255;
+
+    const max = Math.max(r, g, b);
+    const min = Math.min(r, g, b);
+    const diff = max - min;
+
+    if (diff === 0) return 0;
+
+    let hue = 0;
+    switch (max) {
+      case r:
+        hue = (g - b) / diff + (g < b ? 6 : 0);
+        break;
+      case g:
+        hue = (b - r) / diff + 2;
+        break;
+      case b:
+        hue = (r - g) / diff + 4;
+        break;
+    }
+
+    return hue * 60;
+  }
+</script>
+
 {% schema %}
 {
   "name": "Modern Article",
@@ -525,6 +809,56 @@
             { "value": "large", "label": "Large" },
             { "value": "full", "label": "Full" }
           ]
+        },
+        {
+          "type": "select",
+          "id": "hero_style",
+          "label": "Hero style",
+          "default": "single",
+          "options": [
+            { "value": "single", "label": "Single column" },
+            { "value": "two_column", "label": "Two column" }
+          ]
+        },
+        {
+          "type": "header",
+          "content": "Two Column Layout Settings"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_category",
+          "default": true,
+          "label": "Show category"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_subtitle",
+          "default": true,
+          "label": "Show subtitle"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_author",
+          "default": true,
+          "label": "Show author"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_date",
+          "default": true,
+          "label": "Show date"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_read_time",
+          "default": true,
+          "label": "Show reading time"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_share_buttons",
+          "default": true,
+          "label": "Show share buttons"
         },
         {
           "type": "checkbox",

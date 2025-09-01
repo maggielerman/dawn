@@ -1,7 +1,6 @@
 /* Modern Blog Listing Styles */
 
 .modern-blog {
-  max-width: 1200px;
   margin: 0 auto;
 }
 
@@ -110,24 +109,28 @@
 
 /* Featured Article */
 .modern-blog__featured {
-  margin-bottom: 6rem;
+  margin-bottom: 3rem;
+  margin-top: 0 !important;
+}
+
+/* Override default section spacing for featured article */
+.modern-blog__featured + .modern-blog__container {
+  margin-top: 0;
 }
 
 .featured-article {
   display: grid;
   gap: 3rem;
   align-items: center;
-  padding: 3rem;
-  border-radius: 1.6rem;
-  background: rgba(var(--color-foreground), 0.02);
-  border: 1px solid rgba(var(--color-foreground), 0.06);
+  padding: 2.4rem;
+  margin: 0;
 }
 
 @media screen and (min-width: 750px) {
   .featured-article {
     grid-template-columns: 1fr 1fr;
     gap: 4rem;
-    padding: 4rem;
+    padding: 2.4rem;
   }
 }
 
@@ -224,7 +227,7 @@
 
 /* Blog Grid */
 .modern-blog__grid {
-  margin-bottom: 6rem;
+  margin-bottom: 3rem;
 }
 
 .modern-blog__articles {
