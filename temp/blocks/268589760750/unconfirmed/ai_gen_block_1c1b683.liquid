@@ -1,6 +1,686 @@
+{% doc %}
+  @prompt
+    a sidebar that filters and searches collections
+
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-collection-sidebar-{{ ai_gen_id }} {
+    background-color: {{ block.settings.background_color }};
+    padding: {{ block.settings.padding }}px;
+    border-radius: {{ block.settings.border_radius }}px;
+    border: 1px solid {{ block.settings.border_color }};
+    max-width: 100%;
+  }
+
+  .ai-collection-sidebar__header-{{ ai_gen_id }} {
+    margin-bottom: 24px;
+  }
+
+  .ai-collection-sidebar__title-{{ ai_gen_id }} {
+    color: {{ block.settings.text_color }};
+    font-size: {{ block.settings.title_size }}px;
+    margin: 0 0 16px 0;
+    font-weight: 600;
+  }
+
+  .ai-collection-sidebar__search-{{ ai_gen_id }} {
+    position: relative;
+    margin-bottom: 24px;
+  }
+
+  .ai-collection-sidebar__search-input-{{ ai_gen_id }} {
+    width: 100%;
+    padding: 12px 16px 12px 40px;
+    border: 1px solid {{ block.settings.input_border_color }};
+    border-radius: {{ block.settings.input_border_radius }}px;
+    background-color: {{ block.settings.input_background_color }};
+    color: {{ block.settings.text_color }};
+    font-size: 14px;
+  }
+
+  .ai-collection-sidebar__search-input-{{ ai_gen_id }}:focus {
+    outline: 2px solid {{ block.settings.accent_color }};
+    outline-offset: 2px;
+  }
+
+  .ai-collection-sidebar__search-icon-{{ ai_gen_id }} {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: {{ block.settings.icon_color }};
+    pointer-events: none;
+  }
+
+  .ai-collection-sidebar__filters-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .ai-collection-sidebar__filter-group-{{ ai_gen_id }} {
+    border-bottom: 1px solid {{ block.settings.border_color }};
+    padding-bottom: 16px;
+  }
+
+  .ai-collection-sidebar__filter-group-{{ ai_gen_id }}:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .ai-collection-sidebar__filter-title-{{ ai_gen_id }} {
+    color: {{ block.settings.text_color }};
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0 0 12px 0;
+  }
+
+  .ai-collection-sidebar__filter-options-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .ai-collection-sidebar__filter-option-{{ ai_gen_id }} {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    padding: 4px 0;
+  }
+
+  .ai-collection-sidebar__checkbox-{{ ai_gen_id }} {
+    width: 16px;
+    height: 16px;
+    border: 2px solid {{ block.settings.checkbox_border_color }};
+    border-radius: 3px;
+    background-color: {{ block.settings.input_background_color }};
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  .ai-collection-sidebar__checkbox-{{ ai_gen_id }}.checked {
+    background-color: {{ block.settings.accent_color }};
+    border-color: {{ block.settings.accent_color }};
+  }
+
+  .ai-collection-sidebar__checkbox-{{ ai_gen_id }}.checked::after {
+    content: '';
+    position: absolute;
+    left: 3px;
+    top: 1px;
+    width: 6px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+  }
+
+  .ai-collection-sidebar__option-label-{{ ai_gen_id }} {
+    color: {{ block.settings.text_color }};
+    font-size: 14px;
+    flex-grow: 1;
+  }
+
+  .ai-collection-sidebar__option-count-{{ ai_gen_id }} {
+    color: {{ block.settings.secondary_text_color }};
+    font-size: 12px;
+  }
+
+  .ai-collection-sidebar__collections-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 8px;
+  }
+
+  .ai-collection-sidebar__collection-item-{{ ai_gen_id }} {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px;
+    border-radius: {{ block.settings.item_border_radius }}px;
+    text-decoration: none;
+    color: {{ block.settings.text_color }};
+    transition: background-color 0.2s ease;
+  }
+
+  .ai-collection-sidebar__collection-item-{{ ai_gen_id }}:hover {
+    background-color: {{ block.settings.hover_background_color }};
+  }
+
+  .ai-collection-sidebar__collection-item-{{ ai_gen_id }}.hidden {
+    display: none;
+  }
+
+  .ai-collection-sidebar__collection-image-{{ ai_gen_id }} {
+    width: 40px;
+    height: 40px;
+    border-radius: {{ block.settings.image_border_radius }}px;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  .ai-collection-sidebar__collection-image-{{ ai_gen_id }} img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .ai-collection-sidebar__collection-image-placeholder-{{ ai_gen_id }} {
+    width: 100%;
+    height: 100%;
+    background-color: {{ block.settings.placeholder_background }};
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ai-collection-sidebar__collection-image-placeholder-{{ ai_gen_id }} svg {
+    width: 20px;
+    height: 20px;
+    color: {{ block.settings.icon_color }};
+  }
+
+  .ai-collection-sidebar__collection-info-{{ ai_gen_id }} {
+    flex-grow: 1;
+  }
+
+  .ai-collection-sidebar__collection-title-{{ ai_gen_id }} {
+    font-size: 14px;
+    font-weight: 500;
+    margin: 0 0 2px 0;
+  }
+
+  .ai-collection-sidebar__collection-count-{{ ai_gen_id }} {
+    font-size: 12px;
+    color: {{ block.settings.secondary_text_color }};
+    margin: 0;
+  }
+
+  .ai-collection-sidebar__clear-button-{{ ai_gen_id }} {
+    background: none;
+    border: 1px solid {{ block.settings.accent_color }};
+    color: {{ block.settings.accent_color }};
+    padding: 8px 16px;
+    border-radius: {{ block.settings.input_border_radius }}px;
+    cursor: pointer;
+    font-size: 14px;
+    margin-top: 16px;
+    width: 100%;
+  }
+
+  .ai-collection-sidebar__clear-button-{{ ai_gen_id }}:hover {
+    background-color: {{ block.settings.accent_color }};
+    color: white;
+  }
+
+  .ai-collection-sidebar__no-results-{{ ai_gen_id }} {
+    color: {{ block.settings.secondary_text_color }};
+    font-size: 14px;
+    text-align: center;
+    padding: 20px;
+    font-style: italic;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-collection-sidebar-{{ ai_gen_id }} {
+      padding: {{ block.settings.padding | times: 0.75 }}px;
+    }
+  }
+{% endstyle %}
+
+<collection-sidebar-{{ ai_gen_id }}
+  class="ai-collection-sidebar-{{ ai_gen_id }}"
+  {{ block.shopify_attributes }}
+>
+  <div class="ai-collection-sidebar__header-{{ ai_gen_id }}">
+    {% if block.settings.title != blank %}
+      <h2 class="ai-collection-sidebar__title-{{ ai_gen_id }}">{{ block.settings.title }}</h2>
+    {% endif %}
+
+    <div class="ai-collection-sidebar__search-{{ ai_gen_id }}">
+      <input
+        type="text"
+        class="ai-collection-sidebar__search-input-{{ ai_gen_id }}"
+        placeholder="{{ block.settings.search_placeholder }}"
+        aria-label="Search collections"
+      >
+      <div class="ai-collection-sidebar__search-icon-{{ ai_gen_id }}">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"></circle>
+          <path d="m21 21-4.35-4.35"></path>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <div class="ai-collection-sidebar__filters-{{ ai_gen_id }}">
+    {% if block.settings.show_product_type_filter %}
+      <div class="ai-collection-sidebar__filter-group-{{ ai_gen_id }}">
+        <h3 class="ai-collection-sidebar__filter-title-{{ ai_gen_id }}">Product type</h3>
+        <div class="ai-collection-sidebar__filter-options-{{ ai_gen_id }}" data-filter-type="product-type">
+          {% assign product_types = collections | map: 'products' | join: ',' | split: ',' | map: 'type' | uniq %}
+          {% for product_type in product_types limit: 8 %}
+            {% if product_type != blank %}
+              <label class="ai-collection-sidebar__filter-option-{{ ai_gen_id }}">
+                <div class="ai-collection-sidebar__checkbox-{{ ai_gen_id }}" data-value="{{ product_type | handle }}"></div>
+                <span class="ai-collection-sidebar__option-label-{{ ai_gen_id }}">{{ product_type }}</span>
+              </label>
+            {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
+
+    {% if block.settings.show_vendor_filter %}
+      <div class="ai-collection-sidebar__filter-group-{{ ai_gen_id }}">
+        <h3 class="ai-collection-sidebar__filter-title-{{ ai_gen_id }}">Brand</h3>
+        <div class="ai-collection-sidebar__filter-options-{{ ai_gen_id }}" data-filter-type="vendor">
+          {% assign vendors = collections | map: 'products' | join: ',' | split: ',' | map: 'vendor' | uniq %}
+          {% for vendor in vendors limit: 8 %}
+            {% if vendor != blank %}
+              <label class="ai-collection-sidebar__filter-option-{{ ai_gen_id }}">
+                <div class="ai-collection-sidebar__checkbox-{{ ai_gen_id }}" data-value="{{ vendor | handle }}"></div>
+                <span class="ai-collection-sidebar__option-label-{{ ai_gen_id }}">{{ vendor }}</span>
+              </label>
+            {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
+
+    {% if block.settings.show_availability_filter %}
+      <div class="ai-collection-sidebar__filter-group-{{ ai_gen_id }}">
+        <h3 class="ai-collection-sidebar__filter-title-{{ ai_gen_id }}">Availability</h3>
+        <div class="ai-collection-sidebar__filter-options-{{ ai_gen_id }}" data-filter-type="availability">
+          <label class="ai-collection-sidebar__filter-option-{{ ai_gen_id }}">
+            <div class="ai-collection-sidebar__checkbox-{{ ai_gen_id }}" data-value="in-stock"></div>
+            <span class="ai-collection-sidebar__option-label-{{ ai_gen_id }}">In stock</span>
+          </label>
+          <label class="ai-collection-sidebar__filter-option-{{ ai_gen_id }}">
+            <div class="ai-collection-sidebar__checkbox-{{ ai_gen_id }}" data-value="out-of-stock"></div>
+            <span class="ai-collection-sidebar__option-label-{{ ai_gen_id }}">Out of stock</span>
+          </label>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+
+  <div class="ai-collection-sidebar__collections-{{ ai_gen_id }}">
+    {% for collection in collections limit: block.settings.collection_limit %}
+      {% if collection.products_count > 0 %}
+        <a
+          href="{{ collection.url }}"
+          class="ai-collection-sidebar__collection-item-{{ ai_gen_id }}"
+          data-collection-title="{{ collection.title | downcase }}"
+          data-collection-handle="{{ collection.handle }}"
+        >
+          <div class="ai-collection-sidebar__collection-image-{{ ai_gen_id }}">
+            {% if collection.featured_image %}
+              <img
+                src="{{ collection.featured_image | image_url: width: 80 }}"
+                alt="{{ collection.featured_image.alt | escape }}"
+                loading="lazy"
+                width="80"
+                height="80"
+              >
+            {% else %}
+              <div class="ai-collection-sidebar__collection-image-placeholder-{{ ai_gen_id }}">
+                {{ 'collection-1' | placeholder_svg_tag }}
+              </div>
+            {% endif %}
+          </div>
+          <div class="ai-collection-sidebar__collection-info-{{ ai_gen_id }}">
+            <h3 class="ai-collection-sidebar__collection-title-{{ ai_gen_id }}">{{ collection.title }}</h3>
+            <p class="ai-collection-sidebar__collection-count-{{ ai_gen_id }}">
+              {{ collection.products_count }}
+              {% if collection.products_count == 1 %}
+                product
+              {% else %}
+                products
+              {% endif %}
+            </p>
+          </div>
+        </a>
+      {% endif %}
+    {% endfor %}
+  </div>
+
+  <div class="ai-collection-sidebar__no-results-{{ ai_gen_id }}" style="display: none;">
+    No collections found matching your search.
+  </div>
+
+  <button class="ai-collection-sidebar__clear-button-{{ ai_gen_id }}" style="display: none;">
+    Clear all filters
+  </button>
+</collection-sidebar-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class CollectionSidebar{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+        this.searchInput = null;
+        this.collectionItems = [];
+        this.filterCheckboxes = [];
+        this.clearButton = null;
+        this.noResultsMessage = null;
+        this.activeFilters = {
+          search: '',
+          'product-type': [],
+          'vendor': [],
+          'availability': []
+        };
+      }
+
+      connectedCallback() {
+        this.searchInput = this.querySelector('.ai-collection-sidebar__search-input-{{ ai_gen_id }}');
+        this.collectionItems = Array.from(this.querySelectorAll('.ai-collection-sidebar__collection-item-{{ ai_gen_id }}'));
+        this.filterCheckboxes = Array.from(this.querySelectorAll('.ai-collection-sidebar__checkbox-{{ ai_gen_id }}'));
+        this.clearButton = this.querySelector('.ai-collection-sidebar__clear-button-{{ ai_gen_id }}');
+        this.noResultsMessage = this.querySelector('.ai-collection-sidebar__no-results-{{ ai_gen_id }}');
+
+        this.setupEventListeners();
+      }
+
+      setupEventListeners() {
+        if (this.searchInput) {
+          this.searchInput.addEventListener('input', (e) => {
+            this.activeFilters.search = e.target.value.toLowerCase();
+            this.applyFilters();
+          });
+        }
+
+        this.filterCheckboxes.forEach(checkbox => {
+          checkbox.addEventListener('click', () => {
+            this.toggleFilter(checkbox);
+          });
+        });
+
+        if (this.clearButton) {
+          this.clearButton.addEventListener('click', () => {
+            this.clearAllFilters();
+          });
+        }
+      }
+
+      toggleFilter(checkbox) {
+        const filterGroup = checkbox.closest('[data-filter-type]');
+        const filterType = filterGroup.dataset.filterType;
+        const value = checkbox.dataset.value;
+
+        checkbox.classList.toggle('checked');
+
+        if (checkbox.classList.contains('checked')) {
+          if (!this.activeFilters[filterType].includes(value)) {
+            this.activeFilters[filterType].push(value);
+          }
+        } else {
+          this.activeFilters[filterType] = this.activeFilters[filterType].filter(item => item !== value);
+        }
+
+        this.applyFilters();
+      }
+
+      applyFilters() {
+        let visibleCount = 0;
+
+        this.collectionItems.forEach(item => {
+          const title = item.dataset.collectionTitle;
+          const handle = item.dataset.collectionHandle;
+
+          let shouldShow = true;
+
+          if (this.activeFilters.search && !title.includes(this.activeFilters.search)) {
+            shouldShow = false;
+          }
+
+          if (shouldShow) {
+            item.classList.remove('hidden');
+            visibleCount++;
+          } else {
+            item.classList.add('hidden');
+          }
+        });
+
+        this.updateUI(visibleCount);
+      }
+
+      updateUI(visibleCount) {
+        const hasActiveFilters = this.activeFilters.search ||this.activeFilters['product-type'].length > 0 ||
+          this.activeFilters['vendor'].length > 0 ||
+          this.activeFilters['availability'].length > 0;
+
+        if (this.clearButton) {
+          this.clearButton.style.display = hasActiveFilters ? 'block' : 'none';
+        }
+
+        if (this.noResultsMessage) {
+          this.noResultsMessage.style.display = (visibleCount === 0 && hasActiveFilters) ? 'block' : 'none';
+        }
+      }
+
+      clearAllFilters() {
+        this.activeFilters = {
+          search: '',
+          'product-type': [],
+          'vendor': [],
+          'availability': []
+        };
+
+        if (this.searchInput) {
+          this.searchInput.value = '';
+        }
+
+        this.filterCheckboxes.forEach(checkbox => {
+          checkbox.classList.remove('checked');
+        });
+
+        this.collectionItems.forEach(item => {
+          item.classList.remove('hidden');
+        });
+
+        this.updateUI(this.collectionItems.length);
+      }
+    }
+
+    customElements.define('collection-sidebar-{{ ai_gen_id }}', CollectionSidebar{{ ai_gen_id }});
+  })();
+</script>
+
 {% schema %}
- {
-   "name": "AI_Block",
-   "tag": "shopify-ai-generated-block"
- }
+{
+  "name": "Collection sidebar",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Browse collections"
+    },
+    {
+      "type": "text",
+      "id": "search_placeholder",
+      "label": "Search placeholder",
+      "default": "Search collections..."
+    },
+    {
+      "type": "range",
+      "id": "collection_limit",
+      "min": 5,
+      "max": 50,
+      "step": 5,
+      "label": "Number of collections",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Filters"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_product_type_filter",
+      "label": "Show product type filter",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_vendor_filter",
+      "label": "Show brand filter",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_availability_filter",
+      "label": "Show availability filter",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "secondary_text_color",
+      "label": "Secondary text",
+      "default": "#666666"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent",
+      "default": "#000f9f"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Border",
+      "default": "#e0e0e0"
+    },
+    {
+      "type": "color",
+      "id": "input_background_color",
+      "label": "Input background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "input_border_color",
+      "label": "Input border",
+      "default": "#cccccc"
+    },
+    {
+      "type": "color",
+      "id": "checkbox_border_color",
+      "label": "Checkbox border",
+      "default": "#cccccc"
+    },
+    {
+      "type": "color",
+      "id": "hover_background_color",
+      "label": "Hover background",
+      "default": "#f5f5f5"
+    },
+    {
+      "type": "color",
+      "id": "icon_color",
+      "label": "Icon",
+      "default": "#666666"
+    },
+    {
+      "type": "color",
+      "id": "placeholder_background",
+      "label": "Placeholder background",
+      "default": "#f4f4f4"
+    },
+    {
+      "type": "header",
+      "content": "Style"
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "min": 16,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "label": "Title size",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "padding",
+      "min": 16,
+      "max": 40,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "label": "Border radius",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "input_border_radius",
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "label": "Input border radius",
+      "default": 6
+    },
+    {
+      "type": "range",
+      "id": "item_border_radius",
+      "min": 0,
+      "max": 16,
+      "step": 2,
+      "unit": "px",
+      "label": "Item border radius",
+      "default": 6
+    },
+    {
+      "type": "range",
+      "id": "image_border_radius",
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "label": "Image border radius",
+      "default": 4
+    }
+  ],
+  "presets": [
+    {
+      "name": "Collection sidebar"
+    }
+  ]
+}
 {% endschema %}
