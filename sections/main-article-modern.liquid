@@ -78,9 +78,28 @@
                 class="modern-article__hero-img"
               >
               {% if block.settings.overlay_title %}
-                <div class="modern-article__hero-overlay overlay-pos-{{ block.settings.overlay_position }} overlay-theme-{{ block.settings.overlay_theme }}">
-                  <div class="modern-article__overlay-inner">
+                <div class="modern-article__hero-overlay overlay-pos-{{ block.settings.overlay_position }} overlay-theme-{{ block.settings.overlay_theme }}{% if block.settings.overlay_backdrop %} overlay-with-backdrop{% endif %}">
+                  {% if block.settings.overlay_backdrop %}
+                    <div class="modern-article__overlay-backdrop backdrop-{{ block.settings.overlay_backdrop_style }} backdrop-dir-{{ block.settings.overlay_backdrop_direction }} backdrop-strength-{{ block.settings.overlay_backdrop_strength }}"></div>
+                  {% endif %}
+                  <div class="modern-article__overlay-inner overlay-max-{{ block.settings.overlay_max_width }} overlay-pad-{{ block.settings.overlay_padding }}">
                     <h1 class="modern-article__title modern-article__title--overlay">{{ article.title | escape }}</h1>
+                    {% if block.settings.overlay_show_excerpt and article.excerpt != blank %}
+                      <div class="modern-article__overlay-excerpt">{{ article.excerpt }}</div>
+                    {% endif %}
+                    {% if block.settings.overlay_show_date or block.settings.overlay_show_author or block.settings.overlay_show_read_time %}
+                      <div class="modern-article__overlay-meta">
+                        {% if block.settings.overlay_show_date %}
+                          <time class="modern-article__date" datetime="{{ article.published_at | date: '%Y-%m-%d' }}">{{ article.published_at | date: '%B %d, %Y' }}</time>
+                        {% endif %}
+                        {% if block.settings.overlay_show_author and article.author != blank %}
+                          <span class="modern-article__author">{{ article.author }}</span>
+                        {% endif %}
+                        {% if block.settings.overlay_show_read_time %}
+                          <span class="modern-article__read-time">{{ read_time }} min read</span>
+                        {% endif %}
+                      </div>
+                    {% endif %}
                   </div>
                 </div>
               {% endif %}
@@ -102,22 +121,6 @@
             class="modern-article__header page-width page-width--narrow{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--fade-in{% endif %}"
             {{ block.shopify_attributes }}
           >
-            <div class="modern-article__meta">
-              {%- if block.settings.blog_show_date -%}
-                <time class="modern-article__date" datetime="{{ article.published_at | date: '%Y-%m-%d' }}">
-                  {{ article.published_at | date: '%B %d, %Y' }}
-                </time>
-              {%- endif -%}
-
-              {%- if block.settings.blog_show_author and article.author != blank -%}
-                <span class="modern-article__author"> By {{ article.author }} </span>
-              {%- endif -%}
-
-              {%- if block.settings.show_read_time -%}
-                <span class="modern-article__read-time"> {{ read_time }} min read </span>
-              {%- endif -%}
-            </div>
-
             <h1 class="modern-article__title">
               {{ article.title | escape }}
             </h1>
@@ -127,6 +130,22 @@
                 {{ article.excerpt }}
               </div>
             {%- endif -%}
+
+            <div class="modern-article__meta">
+              {%- if block.settings.blog_show_date -%}
+                <time class="modern-article__date" datetime="{{ article.published_at | date: '%Y-%m-%d' }}">
+                  {{ article.published_at | date: '%B %d, %Y' }}
+                </time>
+              {%- endif -%}
+
+              {%- if block.settings.blog_show_author and article.author != blank -%}
+                <span class="modern-article__author">{{ article.author }}</span>
+              {%- endif -%}
+
+              {%- if block.settings.show_read_time -%}
+                <span class="modern-article__read-time">{{ read_time }} min read</span>
+              {%- endif -%}
+            </div>
           </header>
         {% endunless %}
 
