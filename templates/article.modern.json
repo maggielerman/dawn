@@ -17,6 +17,12 @@
           "settings": {
             "image_height": "large",
             "corner_radius": "none",
+            "hero_style": "two_column",
+            "show_category": true,
+            "show_subtitle": true,
+            "show_author": true,
+            "show_date": true,
+            "show_read_time": true,
             "overlay_title": true,
             "overlay_position": "center",
             "overlay_theme": "dark",
