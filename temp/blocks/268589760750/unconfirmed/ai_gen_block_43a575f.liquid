@@ -1,6 +1,820 @@
+{% doc %}
+  @prompt
+    a sidebar that filters and searches collections, it needs to be a page level setting. create a new collection list page with a sidebar
+
+{% enddoc %}
+{% assign ai_gen_id = 'collection-list-page' %}
+
+{% style %}
+  .ai-collection-page-{{ ai_gen_id }} {
+    max-width: {{ settings.page_width }}px;
+    margin: 0 auto;
+    padding: 0 {{ settings.spacing_grid_horizontal }}px;
+  }
+
+  .ai-collection-page__container-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 40px;
+    margin-top: 40px;
+  }
+
+  .ai-collection-page__sidebar-{{ ai_gen_id }} {
+    background-color: {{ section.settings.sidebar_background_color }};
+    padding: {{ section.settings.sidebar_padding }}px;
+    border-radius: {{ section.settings.sidebar_border_radius }}px;
+    border: 1px solid {{ section.settings.sidebar_border_color }};
+    height: fit-content;
+    position: sticky;
+    top: 20px;
+  }
+
+  .ai-collection-page__main-{{ ai_gen_id }} {
+    min-width: 0;
+  }
+
+  .ai-collection-page__header-{{ ai_gen_id }} {
+    margin-bottom: 32px;
+  }
+
+  .ai-collection-page__title-{{ ai_gen_id }} {
+    color: {{ section.settings.text_color }};
+    font-size: {{ section.settings.page_title_size }}px;
+    margin: 0 0 8px 0;
+    font-weight: 600;
+  }
+
+  .ai-collection-page__description-{{ ai_gen_id }} {
+    color: {{ section.settings.secondary_text_color }};
+    font-size: 16px;
+    margin: 0;
+  }
+
+  .ai-collection-sidebar__header-{{ ai_gen_id }} {
+    margin-bottom: 24px;
+  }
+
+  .ai-collection-sidebar__title-{{ ai_gen_id }} {
+    color: {{ section.settings.text_color }};
+    font-size: {{ section.settings.sidebar_title_size }}px;
+    margin: 0 0 16px 0;
+    font-weight: 600;
+  }
+
+  .ai-collection-sidebar__search-{{ ai_gen_id }} {
+    position: relative;
+    margin-bottom: 24px;
+  }
+
+  .ai-collection-sidebar__search-input-{{ ai_gen_id }} {
+    width: 100%;
+    padding: 12px 16px 12px 40px;
+    border: 1px solid {{ section.settings.input_border_color }};
+    border-radius: {{ section.settings.input_border_radius }}px;
+    background-color: {{ section.settings.input_background_color }};
+    color: {{ section.settings.text_color }};
+    font-size: 14px;
+  }
+
+  .ai-collection-sidebar__search-input-{{ ai_gen_id }}:focus {
+    outline: 2px solid {{ section.settings.accent_color }};
+    outline-offset: 2px;
+  }
+
+  .ai-collection-sidebar__search-icon-{{ ai_gen_id }} {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: {{ section.settings.icon_color }};
+    pointer-events: none;
+  }
+
+  .ai-collection-sidebar__filters-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .ai-collection-sidebar__filter-group-{{ ai_gen_id }} {
+    border-bottom: 1px solid {{ section.settings.sidebar_border_color }};
+    padding-bottom: 16px;
+  }
+
+  .ai-collection-sidebar__filter-group-{{ ai_gen_id }}:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .ai-collection-sidebar__filter-title-{{ ai_gen_id }} {
+    color: {{ section.settings.text_color }};
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0 0 12px 0;
+  }
+
+  .ai-collection-sidebar__filter-options-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .ai-collection-sidebar__filter-option-{{ ai_gen_id }} {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    padding: 4px 0;
+  }
+
+  .ai-collection-sidebar__checkbox-{{ ai_gen_id }} {
+    width: 16px;
+    height: 16px;
+    border: 2px solid {{ section.settings.checkbox_border_color }};
+    border-radius: 3px;
+    background-color: {{ section.settings.input_background_color }};
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  .ai-collection-sidebar__checkbox-{{ ai_gen_id }}.checked {
+    background-color: {{ section.settings.accent_color }};
+    border-color: {{ section.settings.accent_color }};
+  }
+
+  .ai-collection-sidebar__checkbox-{{ ai_gen_id }}.checked::after {
+    content: '';
+    position: absolute;
+    left: 3px;
+    top: 1px;
+    width: 6px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+  }
+
+  .ai-collection-sidebar__option-label-{{ ai_gen_id }} {
+    color: {{ section.settings.text_color }};
+    font-size: 14px;
+    flex-grow: 1;
+  }
+
+  .ai-collection-sidebar__clear-button-{{ ai_gen_id }} {
+    background: none;
+    border: 1px solid {{ section.settings.accent_color }};
+    color: {{ section.settings.accent_color }};
+    padding: 8px 16px;
+    border-radius: {{ section.settings.input_border_radius }}px;
+    cursor: pointer;
+    font-size: 14px;
+    margin-top: 16px;
+    width: 100%;
+  }
+
+  .ai-collection-sidebar__clear-button-{{ ai_gen_id }}:hover {
+    background-color: {{ section.settings.accent_color }};
+    color: white;
+  }
+
+  .ai-collection-grid-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: {{ section.settings.grid_gap }}px;
+  }
+
+  .ai-collection-card-{{ ai_gen_id }} {
+    background-color: {{ section.settings.card_background_color }};
+    border-radius: {{ section.settings.card_border_radius }}px;
+    border: 1px solid {{ section.settings.card_border_color }};
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .ai-collection-card-{{ ai_gen_id }}:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  .ai-collection-card-{{ ai_gen_id }}.hidden {
+    display: none;
+  }
+
+  .ai-collection-card__image-{{ ai_gen_id }} {
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .ai-collection-card__image-{{ ai_gen_id }} img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .ai-collection-card__image-placeholder-{{ ai_gen_id }} {
+    width: 100%;
+    height: 100%;
+    background-color: {{ section.settings.placeholder_background }};
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ai-collection-card__image-placeholder-{{ ai_gen_id }} svg {
+    width: 60px;
+    height: 60px;
+    color: {{ section.settings.icon_color }};
+  }
+
+  .ai-collection-card__content-{{ ai_gen_id }} {
+    padding: 20px;
+  }
+
+  .ai-collection-card__title-{{ ai_gen_id }} {
+    color: {{ section.settings.text_color }};
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0 0 8px 0;
+  }
+
+  .ai-collection-card__description-{{ ai_gen_id }} {
+    color: {{ section.settings.secondary_text_color }};
+    font-size: 14px;
+    margin: 0 0 12px 0;
+    line-height: 1.4;
+  }
+
+  .ai-collection-card__meta-{{ ai_gen_id }} {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .ai-collection-card__count-{{ ai_gen_id }} {
+    color: {{ section.settings.secondary_text_color }};
+    font-size: 12px;
+  }
+
+  .ai-collection-card__arrow-{{ ai_gen_id }} {
+    color: {{ section.settings.accent_color }};
+    width: 16px;
+    height: 16px;
+  }
+
+  .ai-collection-page__no-results-{{ ai_gen_id }} {
+    text-align: center;
+    padding: 60px 20px;
+    color: {{ section.settings.secondary_text_color }};
+  }
+
+  .ai-collection-page__no-results-title-{{ ai_gen_id }} {
+    font-size: 24px;
+    margin: 0 0 8px 0;
+  }
+
+  .ai-collection-page__no-results-text-{{ ai_gen_id }} {
+    font-size: 16px;
+    margin: 0;
+  }
+
+  @media screen and (max-width: 990px) {
+    .ai-collection-page__container-{{ ai_gen_id }} {
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+
+    .ai-collection-page__sidebar-{{ ai_gen_id }} {
+      position: static;
+      order: -1;
+    }
+
+    .ai-collection-grid-{{ ai_gen_id }} {
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-collection-page-{{ ai_gen_id }} {
+      padding: 0 {{ settings.spacing_grid_horizontal | times: 0.5 }}px;
+    }
+
+    .ai-collection-page__container-{{ ai_gen_id }} {
+      margin-top: 20px;
+      gap: 16px;
+    }
+
+    .ai-collection-page__sidebar-{{ ai_gen_id }} {
+      padding: {{ section.settings.sidebar_padding | times: 0.75 }}px;
+    }
+
+    .ai-collection-grid-{{ ai_gen_id }} {
+      grid-template-columns: 1fr;
+    }
+  }
+{% endstyle %}
+
+<div class="ai-collection-page-{{ ai_gen_id }}">
+  <div class="ai-collection-page__header-{{ ai_gen_id }}">
+    <h1 class="ai-collection-page__title-{{ ai_gen_id }}">{{ section.settings.page_title }}</h1>
+    {% if section.settings.page_description != blank %}
+      <p class="ai-collection-page__description-{{ ai_gen_id }}">{{ section.settings.page_description }}</p>
+    {% endif %}
+  </div>
+
+  <collection-list-page-{{ ai_gen_id }} class="ai-collection-page__container-{{ ai_gen_id }}">
+    <div class="ai-collection-page__sidebar-{{ ai_gen_id }}"><div class="ai-collection-sidebar__header-{{ ai_gen_id }}">
+        <h2 class="ai-collection-sidebar__title-{{ ai_gen_id }}">{{ section.settings.sidebar_title }}</h2>
+
+        <div class="ai-collection-sidebar__search-{{ ai_gen_id }}">
+          <input
+            type="text"
+            class="ai-collection-sidebar__search-input-{{ ai_gen_id }}"
+            placeholder="{{ section.settings.search_placeholder }}"
+            aria-label="Search collections"
+          >
+          <div class="ai-collection-sidebar__search-icon-{{ ai_gen_id }}">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"></circle>
+              <path d="m21 21-4.35-4.35"></path>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="ai-collection-sidebar__filters-{{ ai_gen_id }}">
+        {% if section.settings.show_product_type_filter %}
+          <div class="ai-collection-sidebar__filter-group-{{ ai_gen_id }}">
+            <h3 class="ai-collection-sidebar__filter-title-{{ ai_gen_id }}">Product type</h3>
+            <div class="ai-collection-sidebar__filter-options-{{ ai_gen_id }}" data-filter-type="product-type">
+              {% assign product_types = collections | map: 'products' | join: ',' | split: ',' | map: 'type' | uniq %}
+              {% for product_type in product_types limit: 8 %}
+                {% if product_type != blank %}
+                  <label class="ai-collection-sidebar__filter-option-{{ ai_gen_id }}">
+                    <div class="ai-collection-sidebar__checkbox-{{ ai_gen_id }}" data-value="{{ product_type | handle }}"></div>
+                    <span class="ai-collection-sidebar__option-label-{{ ai_gen_id }}">{{ product_type }}</span>
+                  </label>
+                {% endif %}
+              {% endfor %}
+            </div>
+          </div>
+        {% endif %}
+
+        {% if section.settings.show_vendor_filter %}
+          <div class="ai-collection-sidebar__filter-group-{{ ai_gen_id }}">
+            <h3 class="ai-collection-sidebar__filter-title-{{ ai_gen_id }}">Brand</h3>
+            <div class="ai-collection-sidebar__filter-options-{{ ai_gen_id }}" data-filter-type="vendor">
+              {% assign vendors = collections | map: 'products' | join: ',' | split: ',' | map: 'vendor' | uniq %}
+              {% for vendor in vendors limit: 8 %}
+                {% if vendor != blank %}
+                  <label class="ai-collection-sidebar__filter-option-{{ ai_gen_id }}">
+                    <div class="ai-collection-sidebar__checkbox-{{ ai_gen_id }}" data-value="{{ vendor | handle }}"></div>
+                    <span class="ai-collection-sidebar__option-label-{{ ai_gen_id }}">{{ vendor }}</span>
+                  </label>
+                {% endif %}
+              {% endfor %}
+            </div>
+          </div>
+        {% endif %}
+
+        {% if section.settings.show_availability_filter %}
+          <div class="ai-collection-sidebar__filter-group-{{ ai_gen_id }}">
+            <h3 class="ai-collection-sidebar__filter-title-{{ ai_gen_id }}">Availability</h3>
+            <div class="ai-collection-sidebar__filter-options-{{ ai_gen_id }}" data-filter-type="availability">
+              <label class="ai-collection-sidebar__filter-option-{{ ai_gen_id }}">
+                <div class="ai-collection-sidebar__checkbox-{{ ai_gen_id }}" data-value="in-stock"></div>
+                <span class="ai-collection-sidebar__option-label-{{ ai_gen_id }}">In stock</span>
+              </label>
+              <label class="ai-collection-sidebar__filter-option-{{ ai_gen_id }}">
+                <div class="ai-collection-sidebar__checkbox-{{ ai_gen_id }}" data-value="out-of-stock"></div>
+                <span class="ai-collection-sidebar__option-label-{{ ai_gen_id }}">Out of stock</span>
+              </label>
+            </div>
+          </div>
+        {% endif %}
+      </div>
+
+      <button class="ai-collection-sidebar__clear-button-{{ ai_gen_id }}" style="display: none;">
+        Clear all filters
+      </button>
+    </div>
+
+    <div class="ai-collection-page__main-{{ ai_gen_id }}">
+      <div class="ai-collection-grid-{{ ai_gen_id }}">
+        {% for collection in collections limit: section.settings.collection_limit %}
+          {% if collection.products_count > 0 %}
+            <a
+              href="{{ collection.url }}"
+              class="ai-collection-card-{{ ai_gen_id }}"
+              data-collection-title="{{ collection.title | downcase }}"
+              data-collection-handle="{{ collection.handle }}"
+            >
+              <div class="ai-collection-card__image-{{ ai_gen_id }}">
+                {% if collection.featured_image %}
+                  <img
+                    src="{{ collection.featured_image | image_url: width: 400 }}"
+                    alt="{{ collection.featured_image.alt | escape }}"
+                    loading="lazy"
+                    width="400"
+                    height="200"
+                  >
+                {% else %}
+                  <div class="ai-collection-card__image-placeholder-{{ ai_gen_id }}">
+                    {{ 'collection-1' | placeholder_svg_tag }}
+                  </div>
+                {% endif %}
+              </div>
+              <div class="ai-collection-card__content-{{ ai_gen_id }}">
+                <h3 class="ai-collection-card__title-{{ ai_gen_id }}">{{ collection.title }}</h3>
+                {% if collection.description != blank %}
+                  <p class="ai-collection-card__description-{{ ai_gen_id }}">
+                    {{ collection.description | strip_html | truncate: 100 }}
+                  </p>
+                {% endif %}
+                <div class="ai-collection-card__meta-{{ ai_gen_id }}">
+                  <span class="ai-collection-card__count-{{ ai_gen_id }}">
+                    {{ collection.products_count }}{% if collection.products_count == 1 %}
+                      product
+                    {% else %}
+                      products
+                    {% endif %}
+                  </span>
+                  <svg class="ai-collection-card__arrow-{{ ai_gen_id }}" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m9 18 6-6-6-6"/>
+                  </svg>
+                </div>
+              </div>
+            </a>
+          {% endif %}
+        {% endfor %}
+      </div>
+
+      <div class="ai-collection-page__no-results-{{ ai_gen_id }}" style="display: none;">
+        <h2 class="ai-collection-page__no-results-title-{{ ai_gen_id }}">No collections found</h2>
+        <p class="ai-collection-page__no-results-text-{{ ai_gen_id }}">Try adjusting your search or filters to find what you're looking for.</p>
+      </div>
+    </div>
+  </collection-list-page-{{ ai_gen_id }}>
+</div>
+
+<script>
+  (function() {
+    class CollectionListPage{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+        this.searchInput = null;
+        this.collectionCards = [];
+        this.filterCheckboxes = [];
+        this.clearButton = null;
+        this.noResultsMessage = null;
+        this.activeFilters = {
+          search: '',
+          'product-type': [],
+          'vendor': [],
+          'availability': []
+        };
+      }
+
+      connectedCallback() {
+        this.searchInput = this.querySelector('.ai-collection-sidebar__search-input-{{ ai_gen_id }}');
+        this.collectionCards = Array.from(this.querySelectorAll('.ai-collection-card-{{ ai_gen_id }}'));
+        this.filterCheckboxes = Array.from(this.querySelectorAll('.ai-collection-sidebar__checkbox-{{ ai_gen_id }}'));
+        this.clearButton = this.querySelector('.ai-collection-sidebar__clear-button-{{ ai_gen_id }}');
+        this.noResultsMessage = this.querySelector('.ai-collection-page__no-results-{{ ai_gen_id }}');
+
+        this.setupEventListeners();
+      }
+
+      setupEventListeners() {
+        if (this.searchInput) {
+          this.searchInput.addEventListener('input', (e) => {
+            this.activeFilters.search = e.target.value.toLowerCase();
+            this.applyFilters();
+          });
+        }
+
+        this.filterCheckboxes.forEach(checkbox => {
+          checkbox.addEventListener('click', () => {
+            this.toggleFilter(checkbox);
+          });
+        });
+
+        if (this.clearButton) {
+          this.clearButton.addEventListener('click', () => {
+            this.clearAllFilters();
+          });
+        }
+      }
+
+      toggleFilter(checkbox) {
+        const filterGroup = checkbox.closest('[data-filter-type]');
+        const filterType = filterGroup.dataset.filterType;
+        const value = checkbox.dataset.value;
+
+        checkbox.classList.toggle('checked');
+
+        if (checkbox.classList.contains('checked')) {
+          if (!this.activeFilters[filterType].includes(value)) {
+            this.activeFilters[filterType].push(value);
+          }
+        } else {
+          this.activeFilters[filterType] = this.activeFilters[filterType].filter(item => item !== value);
+        }
+
+        this.applyFilters();
+      }
+
+      applyFilters() {
+        let visibleCount = 0;
+
+        this.collectionCards.forEach(card => {
+          const title = card.dataset.collectionTitle;
+          const handle = card.dataset.collectionHandle;
+
+          let shouldShow = true;
+
+          if (this.activeFilters.search && !title.includes(this.activeFilters.search)) {
+            shouldShow = false;
+          }
+
+          if (shouldShow) {
+            card.classList.remove('hidden');
+            visibleCount++;
+          } else {
+            card.classList.add('hidden');
+          }
+        });
+
+        this.updateUI(visibleCount);
+      }
+
+      updateUI(visibleCount) {
+        const hasActiveFilters = this.activeFilters.search ||
+          this.activeFilters['product-type'].length > 0 ||
+          this.activeFilters['vendor'].length > 0 ||
+          this.activeFilters['availability'].length > 0;
+
+        if (this.clearButton) {
+          this.clearButton.style.display = hasActiveFilters ? 'block' : 'none';
+        }
+
+        if (this.noResultsMessage) {
+          this.noResultsMessage.style.display = (visibleCount === 0 && hasActiveFilters) ? 'block' : 'none';
+        }
+      }
+
+      clearAllFilters() {
+        this.activeFilters = {
+          search: '',
+          'product-type': [],
+          'vendor': [],
+          'availability': []
+        };
+
+        if (this.searchInput) {
+          this.searchInput.value = '';
+        }
+
+        this.filterCheckboxes.forEach(checkbox => {
+          checkbox.classList.remove('checked');
+        });
+
+        this.collectionCards.forEach(card => {
+          card.classList.remove('hidden');
+        });
+
+        this.updateUI(this.collectionCards.length);
+      }
+    }
+
+    customElements.define('collection-list-page-{{ ai_gen_id }}', CollectionListPage{{ ai_gen_id }});
+  })();
+</script>
+
 {% schema %}
- {
-   "name": "AI_Block",
-   "tag": "shopify-ai-generated-block"
- }
+{
+  "name": "Collection list page",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Page content"
+    },
+    {
+      "type": "text",
+      "id": "page_title",
+      "label": "Page title",
+      "default": "All Collections"
+    },
+    {
+      "type": "textarea",
+      "id": "page_description",
+      "label": "Page description",
+      "default": "Browse our complete collection of products organized by category."
+    },
+    {
+      "type": "range",
+      "id": "collection_limit",
+      "min": 10,
+      "max": 100,
+      "step": 10,
+      "label": "Number of collections",
+      "default": 50
+    },
+    {
+      "type": "header",
+      "content": "Sidebar"
+    },
+    {
+      "type": "text",
+      "id": "sidebar_title",
+      "label": "Sidebar title",
+      "default": "Filter Collections"
+    },
+    {
+      "type": "text",
+      "id": "search_placeholder",
+      "label": "Search placeholder",
+      "default": "Search collections..."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_product_type_filter",
+      "label": "Show product type filter",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_vendor_filter",
+      "label": "Show brand filter",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_availability_filter",
+      "label": "Show availability filter",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "grid_gap",
+      "min": 16,
+      "max": 40,
+      "step": 4,
+      "unit": "px",
+      "label": "Grid gap",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "sidebar_padding",
+      "min": 16,
+      "max": 40,
+      "step": 4,
+      "unit": "px",
+      "label": "Sidebar padding",
+      "default": 24
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "secondary_text_color",
+      "label": "Secondary text",
+      "default": "#666666"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent",
+      "default": "#000f9f"
+    },
+    {
+      "type": "color",
+      "id": "sidebar_background_color",
+      "label": "Sidebar background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "sidebar_border_color",
+      "label": "Sidebar border",
+      "default": "#e0e0e0"
+    },
+    {
+      "type": "color",
+      "id": "card_background_color",
+      "label": "Card background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "card_border_color",
+      "label": "Card border",
+      "default": "#e0e0e0"
+    },
+    {
+      "type": "color",
+      "id": "input_background_color",
+      "label": "Input background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "input_border_color",
+      "label": "Input border",
+      "default": "#cccccc"
+    },
+    {
+      "type": "color",
+      "id": "checkbox_border_color",
+      "label": "Checkbox border",
+      "default": "#cccccc"
+    },
+    {
+      "type": "color",
+      "id": "icon_color",
+      "label": "Icon",
+      "default": "#666666"
+    },
+    {
+      "type": "color",
+      "id": "placeholder_background",
+      "label": "Placeholder background",
+      "default": "#f4f4f4"
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "range",
+      "id": "page_title_size",
+      "min": 24,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "label": "Page title size",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "sidebar_title_size",
+      "min": 16,
+      "max": 24,
+      "step": 2,
+      "unit": "px",
+      "label": "Sidebar title size",
+      "default": 18
+    },
+    {
+      "type": "header",
+      "content": "Style"
+    },
+    {
+      "type": "range",
+      "id": "sidebar_border_radius",
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "label": "Sidebar border radius",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "card_border_radius",
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "label": "Card border radius",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "input_border_radius",
+      "min": 0,
+      "max": 16,
+      "step": 2,
+      "unit": "px",
+      "label": "Input border radius",
+      "default": 6
+    }
+  ]
+}
 {% endschema %}
