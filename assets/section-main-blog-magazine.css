@@ -53,13 +53,15 @@
 .magazine-hero__media img {
   display: block;
   width: 100%;
-  height: 420px;
+  height: auto;
+  aspect-ratio: 16/9;
   object-fit: cover;
+  object-position: center;
 }
 
 @media screen and (min-width: 990px) {
   .magazine-hero__media img {
-    height: 520px;
+    aspect-ratio: 21/9;
   }
 }
 
@@ -120,10 +122,10 @@
 
 /* Card image sizing tweaks per slot */
 @media screen and (min-width: 750px) {
-  .magazine-articles > .blog-article:nth-child(1) .modern-article-card__img { height: 360px; }
-  .magazine-articles > .blog-article:nth-child(2) .modern-article-card__img { height: 300px; }
-  .magazine-articles > .blog-article:nth-child(3) .modern-article-card__img { height: 300px; }
-  .magazine-articles > .blog-article:nth-child(n+4) .modern-article-card__img { height: 240px; }
+  .magazine-articles > .blog-article:nth-child(1) .modern-article-card__img { aspect-ratio: 16/9; }
+  .magazine-articles > .blog-article:nth-child(2) .modern-article-card__img { aspect-ratio: 4/3; }
+  .magazine-articles > .blog-article:nth-child(3) .modern-article-card__img { aspect-ratio: 4/3; }
+  .magazine-articles > .blog-article:nth-child(n+4) .modern-article-card__img { aspect-ratio: 3/2; }
 }
 
 /* Pagination */
