@@ -1,0 +1,62 @@
+{% comment %}
+  Renders customization inputs for line item properties on customizable products.
+  Accepts:
+  - product: {Object}
+  - form: {Object}
+  - section: {Object}
+
+  Usage:
+  {% render 'customization-fields', product: product, form: form, section: section %}
+{% endcomment %}
+
+<div class="product-customization">
+  <hr>
+  <div class="recipient-fields__field">
+    <div class="field">
+      <input
+        class="field__input"
+        type="text"
+        id="Customization-engraving-{{ section.id }}"
+        name="properties[Engraving text]"
+        placeholder="Engraving text (optional)"
+      >
+      <label class="field__label" for="Customization-engraving-{{ section.id }}">
+        Engraving text
+      </label>
+    </div>
+  </div>
+
+  <div class="recipient-fields__field">
+    <div class="field">
+      <select
+        class="field__input"
+        id="Customization-font-{{ section.id }}"
+        name="properties[Font]"
+      >
+        <option value="Default">Default</option>
+        <option value="Serif">Serif</option>
+        <option value="Sans-serif">Sans-serif</option>
+        <option value="Script">Script</option>
+      </select>
+      <label class="field__label" for="Customization-font-{{ section.id }}">
+        Font
+      </label>
+    </div>
+  </div>
+
+  <div class="recipient-fields__field">
+    <div class="field">
+      <textarea
+        rows="5"
+        id="Customization-notes-{{ section.id }}"
+        class="text-area field__input"
+        name="properties[Personalization notes]"
+        placeholder="Notes for personalization (optional)"
+      ></textarea>
+      <label class="form__label field__label" for="Customization-notes-{{ section.id }}">
+        Personalization notes
+      </label>
+    </div>
+  </div>
+</div>
+
