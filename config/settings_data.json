@@ -43,7 +43,7 @@
     "inputs_shadow_blur": 5,
     "card_title_line_clamp": "2",
     "card_style": "card",
-    "card_image_padding": 20,
+    "card_image_padding": 14,
     "card_text_alignment": "left",
     "card_color_scheme": "scheme-1",
     "card_border_thickness": 1,
@@ -152,6 +152,24 @@
           "button_horizontal_position": "bottom_right",
           "button_vertical_position": "lowest",
           "greeting_message": ""
+        }
+      },
+      "13851756539466573627": {
+        "type": "shopify://apps/gelato-print-on-demand/blocks/product-personalizer/9f8f1130-ec83-4e2f-a417-5e69fb8f6e45",
+        "disabled": true,
+        "settings": {
+          "hidden-selector": "",
+          "in-page-personalization-preview-selector": "",
+          "cart-edit-selector": "",
+          "cart-item-info-selector": "",
+          "personalized-cart-preview-selector": "",
+          "dropdown-selectors-desktop": "None",
+          "dropdown-selectors-mobile": "None",
+          "show-personalize-tab": true,
+          "hide-preview-button": false,
+          "hide-preview-scroll-bar": false,
+          "zoom-in-preview": false,
+          "enable-manual-save-draft": false
         }
       }
     },
