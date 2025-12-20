@@ -1,7 +1,7 @@
 {% doc %}
   @prompt
-    a collections list for all collections with the metafield by artist set to true, the logic to display the colelctions be  {%- if collection.metafields.collection.is_nav == true
-                    and collection.metafields.collection.by_artist == true
+    a collections list for all collections with the metafield by artist set to true, the logic to display the colelctions be  {%- if collection.metafields.collection.is_nav === true
+                    and collection.metafields.collection.by_artist === true
                   -%}
 
 {% enddoc %}
