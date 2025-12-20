@@ -23,6 +23,19 @@
       assign paginate_by = 28
     endif
   -%}
+  {% assign artist_collections = collections | where: 'metafields.custom.by_artist', true %} {% if artist_collections.size > 0 %}
+{% for collection in artist_collections %}
+{% if collection.featured_image %}{{ collection.title }}{% endif %}
+{{ collection.title }}
+{% if collection.description != blank %}
+{{ collection.description | strip_html | truncate: 150 }}
+
+{% endif %}
+{% endfor %}
+{% else %}
+No artist collections found.
+
+{% endif %}
   {%- paginate collections by paginate_by -%}
     <ul
       class="collection-list grid grid--{{ section.settings.columns_desktop }}-col-desktop grid--{{ section.settings.columns_mobile }}-col-tablet-down"
