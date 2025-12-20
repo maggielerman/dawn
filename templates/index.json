@@ -13,7 +13,7 @@
       "type": "_blocks",
       "blocks": {
         "ai_gen_block_2e8719d_dhMUAL": {
-          "type": "ai_gen_block_2e8719d",
+          "type": "by-artist-ai",
           "disabled": true,
           "settings": {
             "heading": "Artist Collections",
