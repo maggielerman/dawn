@@ -14,20 +14,6 @@
     "footer": {
       "type": "footer",
       "blocks": {
-        "link_list_JaM8cf": {
-          "type": "link_list",
-          "settings": {
-            "heading": "Quick links",
-            "menu": "footer"
-          }
-        },
-        "link_list_VhpfER": {
-          "type": "link_list",
-          "settings": {
-            "heading": "Quick links",
-            "menu": "customer-account-main-menu"
-          }
-        },
         "link_list_CJDEcG": {
           "type": "link_list",
           "settings": {
@@ -35,18 +21,18 @@
             "menu": "partnership-opportunities"
           }
         },
-        "footer-1": {
-          "type": "link_list",
-          "settings": {
-            "heading": "Shipping & Returns",
-            "menu": "footer"
-          }
-        },
         "footer-0": {
           "type": "link_list",
           "settings": {
             "heading": "Resources",
             "menu": "resources"
+          }
+        },
+        "footer-1": {
+          "type": "link_list",
+          "settings": {
+            "heading": "Shipping & Returns",
+            "menu": "footer"
           }
         },
         "footer-2": {
@@ -59,11 +45,9 @@
         }
       },
       "block_order": [
-        "link_list_JaM8cf",
-        "link_list_VhpfER",
         "link_list_CJDEcG",
-        "footer-1",
         "footer-0",
+        "footer-1",
         "footer-2"
       ],
       "settings": {
