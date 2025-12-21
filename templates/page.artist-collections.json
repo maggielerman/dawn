@@ -16,22 +16,21 @@
         "padding_bottom": 28
       }
     },
-    "page_xbm4zC": {
-      "type": "page",
-      "name": "t:sections.page.presets.name",
-      "settings": {
-        "page": "",
-        "heading_size": "h1",
-        "color_scheme": "",
-        "padding_top": 36,
-        "padding_bottom": 36
-      }
-    },
     "custom_liquid_qkMRYy": {
       "type": "custom-liquid",
       "name": "collection by artist",
       "settings": {
-        "custom_liquid": "<ul class=\"collection-list grid grid--1-col grid--3-col-tablet\" role=\"list\">\n  {%- for collection in collections -%}\n    {%- if collection.metafields.collection.by_artist == true\n\n    -%}\n      <li\n        class=\"collection-list__item grid__item{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}\"\n        {% if settings.animations_reveal_on_scroll %}\n          data-cascade\n          style=\"--animation-order: {{ forloop.index }};\"\n        {% endif %}\n      >\n        {% render 'card-collection',\n          card_collection: collection,\n          media_aspect_ratio: section.settings.image_ratio,\n          columns: 3\n        %}\n      </li>\n    {%- endif -%}\n  {%- endfor -%}\n</ul>",
+        "custom_liquid": "<ul class=\"collection-list grid grid--1-col grid--3-col-tablet\" role=\"list\">\n  {%- for collection in collections -%}\n    {%- if collection.metafields.collection.by_artist == true -%}\n      <li\n        class=\"collection-list__item grid__item{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}\"\n        {% if settings.animations_reveal_on_scroll %}\n          data-cascade\n          style=\"--animation-order: {{ forloop.index }};\"\n        {% endif %}\n      >\n        {% render 'card-collection',\n          card_collection: collection,\n          media_aspect_ratio: section.settings.image_ratio,\n          columns: 3\n        %}\n      </li>\n    {%- endif -%}\n  {%- endfor -%}\n</ul>",
+        "color_scheme": "",
+        "padding_top": 40,
+        "padding_bottom": 52
+      }
+    },
+    "custom_liquid_VqDCnN": {
+      "type": "custom-liquid",
+      "name": "t:sections.custom-liquid.presets.name",
+      "settings": {
+        "custom_liquid": "<ul class=\"collection-list grid grid--1-col grid--3-col-tablet\" role=\"list\">\n  {%- for item in collections -%}\n    {%- assign collection = item[1] | default: item -%}\n\n    {%- if collection != blank and collection.metafields.collection.by_artist.value == true -%}\n      <li\n        class=\"collection-list__item grid__item{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}\"\n        {% if settings.animations_reveal_on_scroll %}\n          data-cascade\n          style=\"--animation-order: {{ forloop.index }};\"\n        {% endif %}\n      >\n        {% render 'card-collection',\n          card_collection: collection,\n          media_aspect_ratio: section.settings.image_ratio,\n          columns: 3\n        %}\n      </li>\n    {%- endif -%}\n  {%- endfor -%}\n</ul>",
         "color_scheme": "",
         "padding_top": 40,
         "padding_bottom": 52
@@ -40,7 +39,7 @@
   },
   "order": [
     "main",
-    "page_xbm4zC",
-    "custom_liquid_qkMRYy"
+    "custom_liquid_qkMRYy",
+    "custom_liquid_VqDCnN"
   ]
 }
