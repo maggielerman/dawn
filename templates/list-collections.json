@@ -9,10 +9,6 @@
  */
 {
   "sections": {
-    "17567308083e8403e0": {
-      "type": "_blocks",
-      "settings": {}
-    },
     "main": {
       "type": "main-list-collections",
       "settings": {
@@ -25,7 +21,6 @@
     }
   },
   "order": [
-    "17567308083e8403e0",
     "main"
   ]
 }
