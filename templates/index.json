@@ -243,6 +243,62 @@
         "padding_bottom": 36
       }
     },
+    "blocks_EcWddG": {
+      "type": "_blocks",
+      "blocks": {
+        "ai_gen_block_c003713_VjMCqH": {
+          "type": "ai_gen_block_c003713",
+          "settings": {
+            "main_category": "Featured",
+            "main_title": "The Future of Sustainable Fashion",
+            "main_excerpt": "Discover how innovative designers are revolutionizing the fashion industry with eco-friendly materials and ethical production practices.",
+            "main_author": "Sarah Johnson",
+            "main_date": "March 15, 2024",
+            "main_link": "",
+            "show_read_more": true,
+            "read_more_text": "Read full article",
+            "sidebar_category_1": "Trends",
+            "sidebar_title_1": "Spring Collection Highlights",
+            "sidebar_author_1": "Emma Davis",
+            "sidebar_date_1": "March 12, 2024",
+            "sidebar_link_1": "",
+            "sidebar_category_2": "Style",
+            "sidebar_title_2": "Minimalist Wardrobe Essentials",
+            "sidebar_author_2": "Michael Chen",
+            "sidebar_date_2": "March 10, 2024",
+            "sidebar_link_2": "",
+            "sidebar_category_3": "News",
+            "sidebar_title_3": "Fashion Week Recap",
+            "sidebar_author_3": "Lisa Rodriguez",
+            "sidebar_date_3": "March 8, 2024",
+            "sidebar_link_3": "",
+            "background_color": "#ffffff",
+            "text_color": "#000000",
+            "category_bg_color": "#000000",
+            "category_text_color": "#ffffff",
+            "button_bg_color": "#000000",
+            "button_text_color": "#ffffff",
+            "button_hover_color": "#333333",
+            "main_title_size": 36,
+            "excerpt_size": 16,
+            "sidebar_title_size": 14,
+            "section_padding": 40,
+            "grid_gap": 40,
+            "content_spacing": 24,
+            "main_image_height": 400,
+            "image_border_radius": 8,
+            "button_border_radius": 6
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "ai_gen_block_c003713_VjMCqH"
+      ],
+      "disabled": true,
+      "name": "Magazine editorial layout",
+      "settings": {}
+    },
     "featured_blog_MXemrn": {
       "type": "featured-blog",
       "name": "t:sections.featured-blog.presets.name",
@@ -309,65 +365,8 @@
         "padding_bottom": 36
       }
     },
-    "multicolumn_KK67zV": {
-      "type": "multicolumn",
-      "blocks": {
-        "column_gGbJHa": {
-          "type": "column",
-          "settings": {
-            "title": "Timeless Classics",
-            "text": "<p>Explore timeless masterpieces from legendary artists like Matisse, Van Gogh, and Chagall. Each print is carefully reproduced using museum-quality materials.</p>",
-            "link_label": "Shop Classics",
-            "link": ""
-          }
-        },
-        "column_FbVWrn": {
-          "type": "column",
-          "settings": {
-            "image": "shopify://shop_images/feminine_gallery_wall_-_pink_and_blue_girly.webp",
-            "title": "Gallery Wall Sets",
-            "text": "<p>Curated collections of coordinating prints designed to create stunning wall displays. Each set includes 3-5 carefully selected works that complement each other perfectly, with styling guides and arrangement suggestions included.</p>",
-            "link_label": "Shop Gallery Walls",
-            "link": ""
-          }
-        },
-        "column_JiGLxe": {
-          "type": "column",
-          "settings": {
-            "title": "New Arrivals",
-            "text": "<p>Discover our latest art prints and collections. Fresh designs added every week. Explore trending pieces and limited editions.</p>",
-            "link_label": "Shop New Arrivals",
-            "link": ""
-          }
-        }
-      },
-      "block_order": [
-        "column_gGbJHa",
-        "column_FbVWrn",
-        "column_JiGLxe"
-      ],
-      "disabled": true,
-      "name": "t:sections.multicolumn.presets.name",
-      "settings": {
-        "title": "Shop by Category",
-        "heading_size": "h1",
-        "image_width": "full",
-        "image_ratio": "adapt",
-        "button_label": "",
-        "button_link": "",
-        "columns_desktop": 3,
-        "column_alignment": "left",
-        "background_style": "primary",
-        "color_scheme": "",
-        "columns_mobile": "1",
-        "swipe_on_mobile": true,
-        "padding_top": 36,
-        "padding_bottom": 36
-      }
-    },
     "featured_collection": {
       "type": "featured-collection",
-      "disabled": true,
       "settings": {
         "collection": "best-sellers",
         "products_to_show": 8,
@@ -589,9 +588,9 @@
     "rich_text",
     "multirow_iPNqTd",
     "featured_collection_iBf6wJ",
+    "blocks_EcWddG",
     "featured_blog_MXemrn",
     "image_with_text_wRWr8N",
-    "multicolumn_KK67zV",
     "featured_collection",
     "175673049073816eb0",
     "featured_collection_AX8gdQ",
