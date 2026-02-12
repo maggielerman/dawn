@@ -1,0 +1,248 @@
+{{ 'section-blog-post-magazine.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign content_length = article.content | strip_html | size
+  assign read_time = content_length | divided_by: 1000 | plus: 1
+  if read_time > 15
+    assign read_time = 15
+  endif
+-%}
+
+<article class="magazine-article">
+  {%- for block in section.blocks -%}
+    {%- case block.type -%}
+      {%- when '@app' -%}
+        <div class="page-width page-width--narrow">
+          {% render block %}
+        </div>
+
+      {%- when 'breadcrumb' -%}
+        <div
+          class="magazine-article__breadcrumb page-width{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--fade-in{% endif %}"
+          {{ block.shopify_attributes }}
+        >
+          <nav aria-label="Breadcrumb">
+            <ol class="breadcrumb-list">
+              <li class="breadcrumb-item">
+                <a href="{{ routes.root_url }}">Home</a>
+              </li>
+              <li class="breadcrumb-item">
+                <a href="{{ blog.url }}">{{ blog.title | escape }}</a>
+              </li>
+              <li class="breadcrumb-item" aria-current="page">
+                {{ article.title | escape }}
+              </li>
+            </ol>
+          </nav>
+        </div>
+
+      {%- when 'featured_image' -%}
+        {%- if article.image -%}
+          <div
+            class="magazine-article__hero{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--fade-in{% endif %}"
+            {{ block.shopify_attributes }}
+          >
+            <div class="magazine-article__hero-media media magazine-article__hero-{{ block.settings.image_height }}">
+              <img
+                srcset="
+                  {% if article.image.width >= 550 %}{{ article.image | image_url: width: 550 }} 550w,{% endif %}
+                  {% if article.image.width >= 750 %}{{ article.image | image_url: width: 750 }} 750w,{% endif %}
+                  {% if article.image.width >= 1100 %}{{ article.image | image_url: width: 1100 }} 1100w,{% endif %}
+                  {% if article.image.width >= 1500 %}{{ article.image | image_url: width: 1500 }} 1500w,{% endif %}
+                  {% if article.image.width >= 2200 %}{{ article.image | image_url: width: 2200 }} 2200w,{% endif %}
+                  {{ article.image | image_url }} {{ article.image.width }}w
+                "
+                sizes="(min-width: {{ settings.page_width }}px) {{ settings.page_width | minus: 100 }}px, (min-width: 750px) calc(100vw - 10rem), 100vw"
+                src="{{ article.image | image_url: width: 1500 }}"
+                loading="eager"
+                fetchpriority="high"
+                width="{{ article.image.width }}"
+                height="{{ article.image.height }}"
+                alt="{{ article.image.alt | escape }}"
+                class="magazine-article__hero-img"
+              >
+            </div>
+          </div>
+        {%- endif -%}
+
+      {%- when 'title' -%}
+        <header
+          class="magazine-article__header page-width{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--fade-in{% endif %}"
+          {{ block.shopify_attributes }}
+        >
+          <div class="magazine-article__masthead">
+            {%- if block.settings.show_category and article.tags.size > 0 -%}
+              <div class="magazine-article__category">{{ article.tags.first }}</div>
+            {%- endif -%}
+            <h1 class="magazine-article__title">{{ article.title | escape }}</h1>
+            {%- if article.excerpt != blank and block.settings.show_subtitle -%}
+              <div class="magazine-article__subtitle">{{ article.excerpt }}</div>
+            {%- endif -%}
+            <div class="magazine-article__meta">
+              {%- if block.settings.blog_show_author and article.author != blank -%}
+                <span class="magazine-article__author">{{ article.author }}</span>
+              {%- endif -%}
+              {%- if block.settings.blog_show_date -%}
+                <time class="magazine-article__date" datetime="{{ article.published_at | date: '%Y-%m-%d' }}">{{ article.published_at | date: '%B %d, %Y' }}</time>
+              {%- endif -%}
+              {%- if block.settings.show_read_time -%}
+                <span class="magazine-article__read-time">{{ read_time }} min read</span>
+              {%- endif -%}
+            </div>
+          </div>
+        </header>
+
+      {%- when 'content' -%}
+        <div
+          class="magazine-article__container page-width{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
+          {{ block.shopify_attributes }}
+        >
+          <div class="magazine-article__content col-count-{{ section.settings.column_count_desktop }} col-gap-{{ section.settings.column_gap }}{% if section.settings.show_drop_cap %} drop-cap-enabled{% endif %}">
+            <div class="rte rte--article">
+              {{ article.content }}
+            </div>
+          </div>
+        </div>
+
+      {%- when 'pull_quote' -%}
+        <aside
+          class="magazine-article__pull-quote page-width{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--fade-in{% endif %}"
+          {{ block.shopify_attributes }}
+        >
+          <blockquote>
+            <span class="pull-quote__mark">“</span>{{ block.settings.quote | escape }}<span class="pull-quote__mark">”</span>
+            {%- if block.settings.attribution != blank -%}
+              <cite class="pull-quote__attribution">— {{ block.settings.attribution | escape }}</cite>
+            {%- endif -%}
+          </blockquote>
+        </aside>
+
+      {%- when 'tags' -%}
+        <div class="magazine-article__tags page-width" {{ block.shopify_attributes }}>
+          {%- if article.tags.size > 0 -%}
+            <ul class="magazine-article__tag-list" role="list">
+              {%- for tag in article.tags -%}
+                <li class="magazine-article__tag">
+                  <a href="{{ blog.url }}/tagged/{{ tag | handle }}">{{ tag }}</a>
+                </li>
+              {%- endfor -%}
+            </ul>
+          {%- endif -%}
+        </div>
+
+      {%- when 'share' -%}
+        <div
+          class="magazine-article__share page-width{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--fade-in{% endif %}"
+          {{ block.shopify_attributes }}
+        >
+          {% assign share_url = request.origin | append: article.url %}
+          {% render 'share-button', block: block, share_link: share_url %}
+        </div>
+
+      {%- when 'author_bio' -%}
+        {%- if block.settings.show_author_bio and (block.settings.author_bio_text != blank or article.author != blank) -%}
+          <section class="magazine-article__author-bio page-width" {{ block.shopify_attributes }}>
+            <h2 class="author-bio__heading">About the author</h2>
+            <p class="author-bio__name">{{ article.author }}</p>
+            {%- if block.settings.author_bio_text != blank -%}
+              <div class="author-bio__text">{{ block.settings.author_bio_text }}</div>
+            {%- endif -%}
+          </section>
+        {%- endif -%}
+    {%- endcase -%}
+  {%- endfor -%}
+</article>
+
+{% schema %}
+{
+  "name": "Magazine Article",
+  "tag": "section",
+  "class": "section",
+  "blocks": [
+    { "type": "@app" },
+    { "type": "breadcrumb", "name": "Breadcrumb", "limit": 1 },
+    {
+      "type": "featured_image",
+      "name": "Featured image",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "select",
+          "id": "image_height",
+          "label": "Image height",
+          "default": "large",
+          "options": [
+            { "value": "adapt", "label": "Adapt to image" },
+            { "value": "small", "label": "Small" },
+            { "value": "medium", "label": "Medium" },
+            { "value": "large", "label": "Large" }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "title",
+      "name": "Title",
+      "limit": 1,
+      "settings": [
+        { "type": "checkbox", "id": "show_category", "label": "Show category", "default": true },
+        { "type": "checkbox", "id": "show_subtitle", "label": "Show subtitle (uses article excerpt)", "default": true },
+        { "type": "checkbox", "id": "blog_show_author", "label": "Show author", "default": true },
+        { "type": "checkbox", "id": "blog_show_date", "label": "Show publish date", "default": true },
+        { "type": "checkbox", "id": "show_read_time", "label": "Show reading time", "default": true }
+      ]
+    },
+    { "type": "content", "name": "Content", "limit": 1 },
+    {
+      "type": "pull_quote",
+      "name": "Pull quote",
+      "settings": [
+        { "type": "text", "id": "quote", "label": "Quote text", "default": "Add a compelling pull quote to break up the story." },
+        { "type": "text", "id": "attribution", "label": "Attribution" }
+      ]
+    },
+    { "type": "tags", "name": "Tags", "limit": 1 },
+    {
+      "type": "share",
+      "name": "Share",
+      "limit": 1,
+      "settings": [
+        { "type": "text", "id": "share_label", "label": "Share label", "default": "Share this article" }
+      ]
+    },
+    {
+      "type": "author_bio",
+      "name": "Author bio",
+      "limit": 1,
+      "settings": [
+        { "type": "checkbox", "id": "show_author_bio", "label": "Show author bio", "default": false },
+        { "type": "textarea", "id": "author_bio_text", "label": "Author bio text" }
+      ]
+    }
+  ],
+  "settings": [
+    {
+      "type": "range",
+      "id": "column_count_desktop",
+      "label": "Number of columns (desktop)",
+      "min": 1,
+      "max": 3,
+      "step": 1,
+      "default": 2
+    },
+    {
+      "type": "select",
+      "id": "column_gap",
+      "label": "Column gap",
+      "default": "medium",
+      "options": [
+        { "value": "small", "label": "Small" },
+        { "value": "medium", "label": "Medium" },
+        { "value": "large", "label": "Large" }
+      ]
+    },
+    { "type": "checkbox", "id": "show_drop_cap", "label": "Stylize first letter (drop cap)", "default": true }
+  ]
+}
+{% endschema %}
+
