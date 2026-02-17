@@ -251,7 +251,11 @@
           "settings": {
             "show_sample_reviews": true,
             "reviews_selection": "all",
-            "products": [],
+            "products": [
+              "a-circle-of-tigers-japanese-woodblock-wall-art-asian-animal-art-large-cats-painting-naive-drawing-animal-fine-art-print-10093",
+              "a-family-of-dogs-1810",
+              "abandoned-house-near-aix-en-provence-1885-1887"
+            ],
             "star_rating": "all",
             "show_review_media": true,
             "display_order": "media_first",
@@ -269,7 +273,7 @@
             "corner_styling": "soft",
             "header_text_color": "#000000",
             "text_color": "#000000",
-            "card_color": "#F9F9F9",
+            "card_color": "#f9f9f9",
             "stars_color": "",
             "arrows_color": "#000000",
             "transition_speed": 5,
