@@ -14,8 +14,9 @@
       "blocks": {
         "vendor": {
           "type": "text",
+          "name": "Artist",
           "settings": {
-            "text": "{{ product.vendor }}",
+            "text": "{{ product.metafields.my_fields.artist.value }}",
             "text_style": "uppercase"
           }
         },
@@ -52,6 +53,18 @@
           "settings": {
             "show_dynamic_checkout": true,
             "show_gift_card_recipient": true
+          }
+        },
+        "share": {
+          "type": "share",
+          "settings": {
+            "share_label": "Share"
+          }
+        },
+        "sku_VNKgNx": {
+          "type": "sku",
+          "settings": {
+            "text_style": "body"
           }
         },
         "description": {
@@ -97,12 +110,6 @@
             "content": "",
             "page": ""
           }
-        },
-        "share": {
-          "type": "share",
-          "settings": {
-            "share_label": "Share"
-          }
         }
       },
       "block_order": [
@@ -113,12 +120,13 @@
         "variant_picker",
         "quantity_selector",
         "buy_buttons",
+        "share",
+        "sku_VNKgNx",
         "description",
         "collapsible-row-0",
         "collapsible-row-1",
         "collapsible-row-2",
-        "collapsible-row-3",
-        "share"
+        "collapsible-row-3"
       ],
       "settings": {
         "enable_sticky_info": true,
