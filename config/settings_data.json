@@ -211,6 +211,15 @@
         "type": "shopify://apps/judge-me-reviews/blocks/judgeme_core/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
         "disabled": false,
         "settings": {}
+      },
+      "17404420059711858266": {
+        "type": "shopify://apps/mento-have-your-ai-presence/blocks/mento-app-embed/0199ab3a-430e-72a5-9569-a4862f57ca9b",
+        "disabled": false,
+        "settings": {
+          "enable_product_schema": true,
+          "enable_faq_schema": true,
+          "enable_blog_schema": true
+        }
       }
     },
     "color_schemes": {
