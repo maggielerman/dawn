@@ -1,14 +1,15 @@
 {% comment %}
-  Renders product buy-buttons.
+  Renders product buy-buttons for customizable products.
+  Includes line item property inputs for personalization.
   Accepts:
-  - product: {Object} product object.
-  - block: {Object} passing the block information.
-  - product_form_id: {String} product form id.
-  - section_id: {String} id of section to which this snippet belongs.
-  - show_pickup_availability: {Boolean} for the pickup availability. If true the pickup availability is rendered, false - not rendered (optional).
+  - product: {Object}
+  - block: {Object}
+  - product_form_id: {String}
+  - section_id: {String}
+  - show_pickup_availability: {Boolean}
 
   Usage:
-  {% render 'buy-buttons', block: block, product: product, product_form_id: product_form_id, section_id: section.id, show_pickup_availability: true %}
+  {% render 'buy-buttons-customizable', block: block, product: product, product_form_id: product_form_id, section_id: section.id, show_pickup_availability: true %}
 {% endcomment %}
 <div {{ block.shopify_attributes }}>
   {%- if product != blank -%}
@@ -60,7 +61,7 @@
           {%- render 'gift-card-recipient-form', product: product, form: form, section: section -%}
         {%- endif -%}
 
-        
+        {%- render 'customization-fields', product: product, form: form, section: section -%}
 
         <div class="product-form__buttons">
           {%- liquid
@@ -151,3 +152,4 @@
     <script src="{{ 'pickup-availability.js' | asset_url }}" defer="defer"></script>
   {%- endif -%}
 </div>
+
