@@ -1,0 +1,23 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-blog-magazine",
+      "settings": {
+        "posts_per_page": 12,
+        "show_featured": true,
+        "show_image": true,
+        "image_height": "medium",
+        "show_date": true,
+        "show_author": true,
+        "show_excerpt": true,
+        "show_read_time": true,
+        "padding_top": 60,
+        "padding_bottom": 60
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}
+

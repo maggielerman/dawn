@@ -1,0 +1,213 @@
+{{ 'component-article-card.css' | asset_url | stylesheet_tag }}
+{{ 'component-card.css' | asset_url | stylesheet_tag }}
+{{ 'section-main-blog-magazine.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}
+
+{%- paginate blog.articles by section.settings.posts_per_page -%}
+  <div class="magazine-blog page-width section-{{ section.id }}-padding">
+    <header class="magazine-blog__header">
+      <div class="magazine-blog__header-content">
+        <h1 class="magazine-blog__title{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--fade-in{% endif %}">
+          {{ blog.title | escape }}
+        </h1>
+        {% if blog.summary != blank %}
+          <p class="magazine-blog__description{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--fade-in{% endif %}">{{ blog.summary }}</p>
+        {% endif %}
+      </div>
+    </header>
+
+    {% if section.settings.show_featured and blog.articles.size > 0 %}
+      {% assign featured_article = blog.articles.first %}
+      <section class="magazine-blog__hero{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}">
+        <article class="magazine-hero">
+          {% if featured_article.image and section.settings.show_image %}
+            <a class="magazine-hero__media" href="{{ featured_article.url }}">
+              <img
+                srcset="
+                  {% if featured_article.image.width >= 750 %}{{ featured_article.image | image_url: width: 750 }} 750w,{% endif %}
+                  {% if featured_article.image.width >= 1100 %}{{ featured_article.image | image_url: width: 1100 }} 1100w,{% endif %}
+                  {% if featured_article.image.width >= 1500 %}{{ featured_article.image | image_url: width: 1500 }} 1500w,{% endif %}
+                  {{ featured_article.image | image_url }} {{ featured_article.image.width }}w
+                "
+                sizes="(min-width: 990px) calc(100vw - 120px), (min-width: 750px) calc(100vw - 100px), 100vw"
+                src="{{ featured_article.image | image_url: width: 1100 }}"
+                loading="lazy"
+                width="{{ featured_article.image.width }}"
+                height="{{ featured_article.image.height }}"
+                alt="{{ featured_article.image.alt | escape }}"
+              >
+            </a>
+          {% endif %}
+
+          <div class="magazine-hero__content">
+            <div class="magazine-hero__meta">
+              {% if section.settings.show_date %}
+                <time datetime="{{ featured_article.published_at | date: '%Y-%m-%d' }}">{{ featured_article.published_at | date: '%B %d, %Y' }}</time>
+              {% endif %}
+              {% if section.settings.show_author and featured_article.author != blank %}
+                <span class="magazine-hero__author">{{ featured_article.author }}</span>
+              {% endif %}
+            </div>
+            <h2 class="magazine-hero__title"><a href="{{ featured_article.url }}">{{ featured_article.title | escape }}</a></h2>
+            {% if featured_article.excerpt != blank or featured_article.content != blank %}
+              <p class="magazine-hero__excerpt">
+                {% if featured_article.excerpt != blank %}
+                  {{ featured_article.excerpt | strip_html | truncatewords: 35 }}
+                {% else %}
+                  {{ featured_article.content | strip_html | truncatewords: 35 }}
+                {% endif %}
+              </p>
+            {% endif %}
+          </div>
+        </article>
+      </section>
+    {% endif %}
+
+    <section class="magazine-blog__grid">
+      {% if section.settings.show_featured and blog.articles.size > 1 %}
+        {% assign grid_articles = blog.articles | offset: 1 %}
+      {% else %}
+        {% assign grid_articles = blog.articles %}
+      {% endif %}
+
+      <div class="magazine-articles">
+        {%- for article in grid_articles -%}
+          <article
+            class="blog-article{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
+            {% if settings.animations_reveal_on_scroll %}data-cascade style="--animation-order: {{ forloop.index }};"{% endif %}
+          >
+            {%- render 'article-card-modern',
+              article: article,
+              media_height: section.settings.image_height,
+              media_aspect_ratio: article.image.aspect_ratio,
+              show_image: section.settings.show_image,
+              show_date: section.settings.show_date,
+              show_author: section.settings.show_author,
+              show_excerpt: section.settings.show_excerpt,
+              show_read_time: section.settings.show_read_time
+            -%}
+          </article>
+        {%- endfor -%}
+      </div>
+    </section>
+
+    {%- if paginate.pages > 1 -%}
+      <div class="magazine-blog__pagination{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--fade-in{% endif %}">
+        {%- render 'pagination', paginate: paginate -%}
+      </div>
+    {%- endif -%}
+  </div>
+{%- endpaginate -%}
+
+{% schema %}
+{
+  "name": "Magazine Blog",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "posts_per_page",
+      "min": 6,
+      "max": 24,
+      "step": 3,
+      "default": 12,
+      "label": "Posts per page"
+    },
+    {
+      "type": "header",
+      "content": "Article Display"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_featured",
+      "default": true,
+      "label": "Show featured hero"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_image",
+      "default": true,
+      "label": "Show article images"
+    },
+    {
+      "type": "select",
+      "id": "image_height",
+      "options": [
+        { "value": "adapt", "label": "Adapt to image" },
+        { "value": "small", "label": "Small" },
+        { "value": "medium", "label": "Medium" },
+        { "value": "large", "label": "Large" }
+      ],
+      "default": "medium",
+      "label": "Image height"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_date",
+      "default": true,
+      "label": "Show publish date"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_author",
+      "default": true,
+      "label": "Show author"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_excerpt",
+      "default": true,
+      "label": "Show article excerpt"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_read_time",
+      "default": true,
+      "label": "Show reading time"
+    },
+    {
+      "type": "header",
+      "content": "Section padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 60
+    }
+  ]
+}
+{% endschema %}
+
